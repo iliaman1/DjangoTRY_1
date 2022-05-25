@@ -2,5 +2,12 @@
 
 {% block content %}
 <h1>{{title}}</h1>
-<p>Содержимое главной страницы</p>
+<ul>
+    {% for p in posts %}
+    <li>
+        <h2>{{p.title}}</h2>
+        <p>{{p.content}}</p>
+    </li>
+    {% endfor %}
+</ul>
 {% endblock %}

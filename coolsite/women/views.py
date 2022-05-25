@@ -2,15 +2,21 @@ from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect
 
 
+menu = ["О сайте", "Добавить статью", "Обратная связь", "Войти"]
+
 
 def index(request):
-    return HttpResponse("Страница приложения women.")
+    return render(request, 'women/index.html', {'title': 'Главная страница', 'menu': menu})
+
+
+def about(request):
+    return render(request, 'women/about.html', {'title': 'О сайте', 'menu': menu})
 
 
 def categories(request, catid):
     if request.GET:
         print(request.GET)
-    return render(request, '')
+    return HttpResponse(f"<h1>Статьи по категориям</h1><p>{catid}</p>")
 
 
 def archive(request, year):

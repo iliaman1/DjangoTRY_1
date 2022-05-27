@@ -28,15 +28,18 @@ def categories(request, catid):
     return HttpResponse(f"<h1>Статьи по категориям</h1><p>{catid}</p>")
 
 
-def show_category(request, cat_id):
-    posts = Women.objects.filter(cat_id=cat_id)
+def show_category(request, cat_slug):
+    cats =Category.objects.all()
+    cat = get_object_or_404(Category, slug=cat_slug)
+    posts = Women.objects.filter(cat_id=cat.id)
 
     if len(posts)==0:
         raise Http404()
 
-    context = {'title': 'Отображение по рубрикам',
+    context = {'title': cat.name,
                'posts': posts,
-               'cat_selected': cat_id}
+               'cats': cats,
+               'cat_selected': cat.id}
     return render(request, 'women/index.html', context=context)
 
 

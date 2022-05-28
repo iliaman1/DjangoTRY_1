@@ -385,7 +385,19 @@ ul.lang-list li a:hover {color: #fdc073;}
     padding: 0;
     color: #CC0000;
 }
-
+.content-text input {
+	border: none;
+	border-radius: 8px;
+	background: #FF6666;
+	height: 30px;
+	cursor: pointer;
+}
+.content-text input:hover {
+	background: #ff9966;
+	-webkit-box-shadow: 5px 5px 18px 0px rgba(152, 22, 97, 0.2);
+	-moz-box-shadow: 5px 5px 18px 0px rgba(152, 22, 97, 0.2);
+	box-shadow: 5px 5px 18px 0px rgba(152, 22, 97, 0.2);
+}
 .form-button {
     min-width: 200px;
     font-size: 16px;

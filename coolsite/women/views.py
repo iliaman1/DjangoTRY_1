@@ -14,8 +14,16 @@ def index(request):
 
 def show_post(request, post_slug):
     post = get_object_or_404(Women, slug=post_slug)
-    context = {'post': post, 'title': post.title, 'cat_selected': post.cat_id,}
+    def add_like(post):
+        post.like
+        # post.save()
+        return post.like + 1
+    context = {'post': post, 'title': post.title, 'cat_selected': post.cat_id, 'add_like': add_like(post)}
+
     return render(request, 'women/post.html', context=context)
+
+
+
 
 
 def about(request):

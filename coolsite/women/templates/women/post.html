@@ -8,5 +8,5 @@
 {% endif %}
 
 {{ post.content|linebreaks }}
-<input type="submit" value=" Нажми меня нежно {{ add_like }}">
+<form action="" method="POST" >{% csrf_token %}<input type="submit" value=" Нажми меня нежно {{ post.like }}"></form>
 {% endblock %}

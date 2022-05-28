@@ -14,16 +14,19 @@ def index(request):
 
 def show_post(request, post_slug):
     post = get_object_or_404(Women, slug=post_slug)
-    def add_like(post):
-        post.like
-        # post.save()
-        return post.like + 1
-    context = {'post': post, 'title': post.title, 'cat_selected': post.cat_id, 'add_like': add_like(post)}
-
+    if request.method == 'POST':
+        post.like += 1
+        post.save()
+    context = {'post': post, 'title': post.title, 'cat_selected': post.cat_id}
     return render(request, 'women/post.html', context=context)
 
 
-
+def add_like(request, post_slug):
+    post = get_object_or_404(Women, slug=post_slug)
+    post.like += 1
+    post.save()
+    context = {'post': post, 'title': post.title, 'cat_selected': post.cat_id}
+    return render(request, 'women/post.html', context=context)
 
 
 def about(request):

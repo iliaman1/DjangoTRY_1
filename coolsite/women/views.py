@@ -2,6 +2,7 @@ from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 
 from .models import *
+from .forms import *
 
 
 def index(request):
@@ -14,11 +15,11 @@ def index(request):
 
 def show_post(request, post_slug):
     post = get_object_or_404(Women, slug=post_slug)
-    if request.method == 'GET':
-        if request.GET.get('like'):
+    if request.method == 'POST':
+        if request.POST.get('like'):
             post.like += 1
             post.save()
-        elif request.GET.get('dislike'):
+        elif request.POST.get('dislike'):
             post.like -= 1
             post.save()
     context = {'post': post, 'title': post.title, 'cat_selected': post.cat_id}
@@ -59,7 +60,19 @@ def show_category(request, cat_slug):
 
 
 def addpage(request):
-    return HttpResponse("Добавление статьи")
+    if request.method == 'POST':
+        form = AddPostForm(request.POST)
+        if form.is_valid():
+            #print(form.cleaned_data)
+            try:
+                Women.objects.create(**form.cleaned_data)
+                return redirect('home')
+            except:
+                form.add_error(None, 'Ошибка добавления поста')
+    else:
+        form = AddPostForm()
+
+    return render(request, 'women/addpage.html', {'title': 'Добавление статьи', 'form': form, })
 
 
 def contact(request):

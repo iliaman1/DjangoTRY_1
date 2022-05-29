@@ -14,9 +14,13 @@ def index(request):
 
 def show_post(request, post_slug):
     post = get_object_or_404(Women, slug=post_slug)
-    if request.method == 'POST':
-        post.like += 1
-        post.save()
+    if request.method == 'GET':
+        if request.GET.get('like'):
+            post.like += 1
+            post.save()
+        elif request.GET.get('dislike'):
+            post.like -= 1
+            post.save()
     context = {'post': post, 'title': post.title, 'cat_selected': post.cat_id}
     return render(request, 'women/post.html', context=context)
 

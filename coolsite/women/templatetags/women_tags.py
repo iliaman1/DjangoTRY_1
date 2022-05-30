@@ -9,11 +9,11 @@ def get_categories(filter=None):
     if not filter:
         return Category.objects.all()
     else:
-        return Category.objects.filter(pk=filter)
+        return Category.objects.filter(slug=filter)
 
 
 @register.inclusion_tag('usertags/list_categories.html')
-def show_categories(sort=None, cat_selected=0):
+def show_categories(sort=None, cat_selected=None):
     if not sort:
         cats = Category.objects.all()
     else:

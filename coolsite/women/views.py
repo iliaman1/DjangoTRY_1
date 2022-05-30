@@ -1,6 +1,7 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView, DetailView
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView
 
 from .models import *
 from .forms import *
@@ -42,6 +43,13 @@ class ShowPost(DetailView):
     model = Women
     template_name = 'women/post.html'
     slug_url_kwarg = 'post_slug' #вместо дефолтного slug
+    #а если по id "pk_url_kwarg"
+    context_object_name = 'post'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = context['post']
+        return context
 
 
 # def show_post(request, post_slug):
@@ -71,7 +79,7 @@ class ShowCategory(ListView):
     model = Category
     template_name = 'women/index.html'
     context_object_name = 'posts'
-    allow_empty = False #если пустой список object list
+    allow_empty = False #если пустой список object list вернет 404
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -98,15 +106,26 @@ class ShowCategory(ListView):
 #     return render(request, 'women/index.html', context=context)
 
 
-def addpage(request):
-    if request.method == 'POST':
-        form = AddPostForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-    else:
-        form = AddPostForm()
+class AddPage(CreateView):
+    form_class = AddPostForm
+    template_name = 'women/addpage.html'
+    success_url = reverse_lazy('home') #куда идти если не по absolute_url
 
-    return render(request, 'women/addpage.html', {'title': 'Добавление статьи', 'form': form, })
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Добавить статью'
+        return context
+
+
+# def addpage(request):
+#     if request.method == 'POST':
+#         form = AddPostForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#     else:
+#         form = AddPostForm()
+#
+#     return render(request, 'women/addpage.html', {'title': 'Добавление статьи', 'form': form, })
 
 
 def contact(request):

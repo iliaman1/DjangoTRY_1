@@ -26,14 +26,6 @@ def show_post(request, post_slug):
     return render(request, 'women/post.html', context=context)
 
 
-def add_like(request, post_slug):
-    post = get_object_or_404(Women, slug=post_slug)
-    post.like += 1
-    post.save()
-    context = {'post': post, 'title': post.title, 'cat_selected': post.cat_id}
-    return render(request, 'women/post.html', context=context)
-
-
 def about(request):
     return render(request, 'women/about.html', {'title': 'О сайте'})
 
@@ -45,7 +37,7 @@ def categories(request, catid):
 
 
 def show_category(request, cat_slug):
-    cats =Category.objects.all()
+    cats = Category.objects.all()
     cat = get_object_or_404(Category, slug=cat_slug)
     posts = Women.objects.filter(cat_id=cat.id)
 
@@ -61,14 +53,9 @@ def show_category(request, cat_slug):
 
 def addpage(request):
     if request.method == 'POST':
-        form = AddPostForm(request.POST)
+        form = AddPostForm(request.POST, request.FILES)
         if form.is_valid():
-            #print(form.cleaned_data)
-            try:
-                Women.objects.create(**form.cleaned_data)
-                return redirect('home')
-            except:
-                form.add_error(None, 'Ошибка добавления поста')
+            form.save()
     else:
         form = AddPostForm()
 

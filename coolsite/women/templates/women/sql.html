@@ -1,0 +1,9 @@
+{% extends 'women/base.html' %}
+
+{% block content %}
+<h1>{{ object_list.title }}</h1>
+{% for zapros in object_list.sql %}
+<p>{{ zapros }}</p>
+
+{% endfor %}
+{% endblock %}

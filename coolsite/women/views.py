@@ -2,7 +2,7 @@ from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
-
+from django.db import connection
 from .models import *
 from .forms import *
 
@@ -30,6 +30,16 @@ class WomenHome(ListView):
     '''
 
 
+class ShowSQL(ListView):
+    model = Women
+    template_name = 'women/sql.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'SQL запросики'
+        context['sql'] = connection.queries
+        return context
+
 
 # def index(request):
 #     posts = Women.objects.all()
@@ -50,6 +60,29 @@ class ShowPost(DetailView):
         context = super().get_context_data(**kwargs)
         context['title'] = context['post']
         return context
+
+    # def get_object(self, queryset=None):
+    #     self.post = get_object_or_404(Women, slug=self.kwargs['post_slug'])
+    #     return Women.objects.filter(slug=self.kwargs['post_slug'])
+    #
+    # def get(self, request, *args, **kwargs):
+    #     if request.GET.get('like'):
+    #         self.post.like += 1
+    #         self.post.save()
+    #     elif request.GET.get('dislike'):
+    #         self.post.like -= 1
+    #         self.post.save()
+    #     return render(request, 'women/post.html', context=self.get_context_data())
+
+        # post = get_object_or_404(Women, slug='post_slug')
+        # if request.GET.get('like'):
+        #     post.like += 1
+        #     post.save()
+        # elif request.GET.get('dislike'):
+        #     post.like -= 1
+        #     post.save()
+
+
 
 
 # def show_post(request, post_slug):

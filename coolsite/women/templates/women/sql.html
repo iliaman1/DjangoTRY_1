@@ -1,9 +1,12 @@
 {% extends 'women/base.html' %}
 
 {% block content %}
-<h1>{{ object_list.title }}</h1>
-{% for zapros in object_list.sql %}
-<p>{{ zapros }}</p>
+<h1>{{ title }}</h1>
+<form action="{% url 'showsql' %}" method="post">
+{% csrf_token %}
 
-{% endfor %}
+{{ form.as_p }}
+
+<button type="submit">Выполнить</button>
+</form>
 {% endblock %}

@@ -30,14 +30,15 @@ class WomenHome(ListView):
     '''
 
 
-class ShowSQL(ListView):
-    model = Women
+class ShowSQL(CreateView):
+    model = MakeRequest
     template_name = 'women/sql.html'
-
+    success_url = reverse_lazy('showsql')
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'SQL запросики'
-        context['sql'] = connection.queries
+
+        #context['sql'] = connection.queries
         return context
 
 

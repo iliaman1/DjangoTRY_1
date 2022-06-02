@@ -103,7 +103,7 @@ class ShowSQL(CreateView):
 class ShowPost(View):
     def get(self, request, post_slug):
         post = get_object_or_404(Women, slug=post_slug)
-        context = {'post': post, 'title': post.title, 'cat_selected': post.slug}
+        context = {'post': post, 'title': post.title, 'cat_selected': post.cat.slug}
         if request.GET.get('like'):
             post.like += 1
             post.save()
@@ -114,7 +114,7 @@ class ShowPost(View):
 
     def post(self, request, post_slug):
         post = get_object_or_404(Women, slug=post_slug)
-        context = {'post': post, 'title': post.title, 'cat_selected': post.slug}
+        context = {'post': post, 'title': post.title, 'cat_selected': post.cat.slug}
         if request.POST.get('like'):
             post.like += 1
             post.save()

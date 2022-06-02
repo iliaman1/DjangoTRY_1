@@ -9,7 +9,7 @@ from .forms import *
 
 
 class WomenHome(View):
-    model = Women
+    model = Women #да это лишняя строчка
 
     def get(self, request):
         posts = Women.objects.all()
@@ -149,20 +149,34 @@ def categories(request, catid):
     return HttpResponse(f"<h1>Статьи по категориям</h1><p>{catid}</p>")
 
 
-class ShowCategory(ListView):
-    model = Category
-    template_name = 'women/index.html'
-    context_object_name = 'posts'
-    allow_empty = False #если пустой список object list вернет 404
+class ShowCategory(View):
+    def get(self, request, cat_slug):
+        posts = Women.objects.filter(cat__slug = self.kwargs['cat_slug'])
+        #print(posts[0].cat)
+        if len(posts) == 0:
+            raise Http404
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Категория - ' + str(context['posts'][0].cat)
-        context['cat_selected'] = self.kwargs['cat_slug']
-        return context
+        context = {
+            'title': posts[0].cat, # есть идеи?
+            'posts': posts,
+            'cat_selected': self.kwargs['cat_slug']
+        }
+        return render(request, 'women/index.html', context=context)
 
-    def get_queryset(self):
-        return Women.objects.filter(cat__slug=self.kwargs['cat_slug'], is_published=True)
+# class ShowCategory(ListView):
+#     model = Category
+#     template_name = 'women/index.html'
+#     context_object_name = 'posts'
+#     allow_empty = False #если пустой список object list вернет 404
+#
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['title'] = 'Категория - ' + str(context['posts'][0].cat)
+#         context['cat_selected'] = self.kwargs['cat_slug']
+#         return context
+#
+#     def get_queryset(self):
+#         return Women.objects.filter(cat__slug=self.kwargs['cat_slug'], is_published=True)
 
 
 # def show_category(request, cat_slug):
@@ -180,15 +194,22 @@ class ShowCategory(ListView):
 #     return render(request, 'women/index.html', context=context)
 
 
-class AddPage(CreateView):
+class AddPage(View):
     form_class = AddPostForm
-    template_name = 'women/addpage.html'
-    success_url = reverse_lazy('home') #куда идти если не по absolute_url
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Добавить статью'
-        return context
+    def get(self, request, *args, **kwargs):
+        pass
+
+
+# class AddPage(CreateView):
+#     form_class = AddPostForm
+#     template_name = 'women/addpage.html'
+#     success_url = reverse_lazy('home') #куда идти если не по absolute_url
+#
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['title'] = 'Добавить статью'
+#         return context
 
 
 # def addpage(request):

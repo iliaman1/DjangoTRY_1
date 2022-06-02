@@ -8,19 +8,32 @@ from .models import *
 from .forms import *
 
 
-class WomenHome(ListView):
+class WomenHome(View):
     model = Women
-    template_name = 'women/index.html' #шаблон
-    context_object_name = 'posts' # меняем название с дефолтного object_list
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Главная страница'
-        context['cat_selected'] = 0
-        return context
+    def get(self, request):
+        posts = Women.objects.all()
+        context = {'title': 'Главная страница',
+                   'posts': posts,
+                   'cat_selected': 0}
+        return render(request, 'women/index.html', context=context)
 
-    def get_queryset(self):    # Что выбирать из модели Women
-        return Women.objects.filter(is_published=True)
+
+
+
+# class WomenHome(ListView):
+#     model = Women
+#     template_name = 'women/index.html' #шаблон
+#     context_object_name = 'posts' # меняем название с дефолтного object_list
+#
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['title'] = 'Главная страница'
+#         context['cat_selected'] = 0
+#         return context
+#
+#     def get_queryset(self):    # Что выбирать из модели Women
+#         return Women.objects.filter(is_published=True)
 
     # extra_context = {'title': 'Главная страница'} # принимает только неизменияемые(статические данные)
     ''' Если бы меню не передавал в пользовательском теге, передавал бы изменяемый(динамический) контент следующим образом:

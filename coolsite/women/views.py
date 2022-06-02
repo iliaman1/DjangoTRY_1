@@ -2,6 +2,7 @@ from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
+from django.views import View
 from django.db import connection
 from .models import *
 from .forms import *
@@ -50,17 +51,17 @@ class ShowSQL(CreateView):
 #     return render(request, 'women/index.html', context=context)
 
 
-class ShowPost(DetailView):
-    model = Women
-    template_name = 'women/post.html'
-    slug_url_kwarg = 'post_slug' #вместо дефолтного slug
-    #а если по id "pk_url_kwarg"
-    context_object_name = 'post'
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = context['post']
-        return context
+# class ShowPost(DetailView):
+#     model = Women
+#     template_name = 'women/post.html'
+#     slug_url_kwarg = 'post_slug' #вместо дефолтного slug
+#     #а если по id "pk_url_kwarg"
+#     context_object_name = 'post'
+#
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['title'] = context['post']
+#         return context
 
     # def get_object(self, queryset=None):
     #     self.post = get_object_or_404(Women, slug=self.kwargs['post_slug'])
@@ -97,6 +98,32 @@ class ShowPost(DetailView):
 #             post.save()
 #     context = {'post': post, 'title': post.title, 'cat_selected': post.cat_id}
 #     return render(request, 'women/post.html', context=context)
+
+
+class ShowPost(View):
+    def get(self, request, post_slug):
+        post = get_object_or_404(Women, slug=post_slug)
+        context = {'post': post, 'title': post.title, 'cat_selected': post.slug}
+        if request.GET.get('like'):
+            post.like += 1
+            post.save()
+        elif request.GET.get('dislike'):
+            post.like -= 1
+            post.save()
+        return render(request, 'women/post.html', context=context)
+
+    def post(self, request, post_slug):
+        post = get_object_or_404(Women, slug=post_slug)
+        context = {'post': post, 'title': post.title, 'cat_selected': post.slug}
+        if request.POST.get('like'):
+            post.like += 1
+            post.save()
+        elif request.POST.get('dislike'):
+            post.like -= 1
+            post.save()
+        return render(request, 'women/post.html', context=context)
+
+
 
 
 def about(request):

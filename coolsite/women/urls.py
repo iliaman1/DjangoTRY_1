@@ -8,7 +8,8 @@ urlpatterns = [
     path('addpage/', AddPage.as_view(), name='add_page'),
     path('contact/', contact, name='contact'),
     path('login/', login, name='login'),
-    path('post/<slug:post_slug>/', ShowPost.as_view(), name='post'),
+    #path('post/<slug:post_slug>/', ShowPost.as_view(), name='post'),
+    path('post/<slug:post_slug>', ShowPost.as_view(), name= 'post'),
     path('category/<slug:cat_slug>/', ShowCategory.as_view(), name='category'),
     path('sql/', ShowSQL.as_view(), name='showsql')
 ]

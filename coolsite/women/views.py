@@ -196,9 +196,22 @@ class ShowCategory(View):
 
 class AddPage(View):
     form_class = AddPostForm
+    template_name = 'women/addpage.html'
+    success_url = reverse_lazy('home')
 
     def get(self, request, *args, **kwargs):
-        pass
+        form = self.form_class
+        context = {'title': 'Добавить статью', 'form': form}
+        return render(request, self.template_name, context=context)
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, request.FILES) # зачем в скобках реквест пост?
+        context = {'title': 'Добавить статью', 'form': form}
+        if form.is_valid():
+            form.save()
+        else:
+            form = self.form_class()
+        return render(request, self.template_name, context=context)
 
 
 # class AddPage(CreateView):

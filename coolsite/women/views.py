@@ -9,7 +9,7 @@ from .forms import *
 
 
 class WomenHome(View):
-    model = Women #да это лишняя строчка
+    model = Women  # да это лишняя строчка
 
     def get(self, request):
         posts = Women.objects.all()
@@ -18,22 +18,19 @@ class WomenHome(View):
                    'cat_selected': 0}
         return render(request, 'women/index.html', context=context)
 
-
-
-
-# class WomenHome(ListView):
-#     model = Women
-#     template_name = 'women/index.html' #шаблон
-#     context_object_name = 'posts' # меняем название с дефолтного object_list
-#
-#     def get_context_data(self, *, object_list=None, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['title'] = 'Главная страница'
-#         context['cat_selected'] = 0
-#         return context
-#
-#     def get_queryset(self):    # Что выбирать из модели Women
-#         return Women.objects.filter(is_published=True)
+    # class WomenHome(ListView):
+    #     model = Women
+    #     template_name = 'women/index.html' #шаблон
+    #     context_object_name = 'posts' # меняем название с дефолтного object_list
+    #
+    #     def get_context_data(self, *, object_list=None, **kwargs):
+    #         context = super().get_context_data(**kwargs)
+    #         context['title'] = 'Главная страница'
+    #         context['cat_selected'] = 0
+    #         return context
+    #
+    #     def get_queryset(self):    # Что выбирать из модели Women
+    #         return Women.objects.filter(is_published=True)
 
     # extra_context = {'title': 'Главная страница'} # принимает только неизменияемые(статические данные)
     ''' Если бы меню не передавал в пользовательском теге, передавал бы изменяемый(динамический) контент следующим образом:
@@ -44,16 +41,26 @@ class WomenHome(View):
     '''
 
 
-class ShowSQL(CreateView):
-    model = MakeRequest
+class ShowSQL(View):
+    form_class = MakeRequest
     template_name = 'women/sql.html'
     success_url = reverse_lazy('showsql')
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'SQL запросики'
 
-        #context['sql'] = connection.queries
-        return context
+    def get(self, request):
+        form = self.form_class
+        context = {'title': 'Запросики',
+                   'form': form}
+        return render(request, self.template_name, context=context)
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+
+        context = {
+            'title': 'Запросики',
+            'form': form,
+            'sql': connection.queries
+        }
+        return render(request, self.template_name, context=context)
 
 
 # def index(request):
@@ -76,28 +83,26 @@ class ShowSQL(CreateView):
 #         context['title'] = context['post']
 #         return context
 
-    # def get_object(self, queryset=None):
-    #     self.post = get_object_or_404(Women, slug=self.kwargs['post_slug'])
-    #     return Women.objects.filter(slug=self.kwargs['post_slug'])
-    #
-    # def get(self, request, *args, **kwargs):
-    #     if request.GET.get('like'):
-    #         self.post.like += 1
-    #         self.post.save()
-    #     elif request.GET.get('dislike'):
-    #         self.post.like -= 1
-    #         self.post.save()
-    #     return render(request, 'women/post.html', context=self.get_context_data())
+# def get_object(self, queryset=None):
+#     self.post = get_object_or_404(Women, slug=self.kwargs['post_slug'])
+#     return Women.objects.filter(slug=self.kwargs['post_slug'])
+#
+# def get(self, request, *args, **kwargs):
+#     if request.GET.get('like'):
+#         self.post.like += 1
+#         self.post.save()
+#     elif request.GET.get('dislike'):
+#         self.post.like -= 1
+#         self.post.save()
+#     return render(request, 'women/post.html', context=self.get_context_data())
 
-        # post = get_object_or_404(Women, slug='post_slug')
-        # if request.GET.get('like'):
-        #     post.like += 1
-        #     post.save()
-        # elif request.GET.get('dislike'):
-        #     post.like -= 1
-        #     post.save()
-
-
+# post = get_object_or_404(Women, slug='post_slug')
+# if request.GET.get('like'):
+#     post.like += 1
+#     post.save()
+# elif request.GET.get('dislike'):
+#     post.like -= 1
+#     post.save()
 
 
 # def show_post(request, post_slug):
@@ -137,8 +142,6 @@ class ShowPost(View):
         return render(request, 'women/post.html', context=context)
 
 
-
-
 def about(request):
     return render(request, 'women/about.html', {'title': 'О сайте'})
 
@@ -151,17 +154,18 @@ def categories(request, catid):
 
 class ShowCategory(View):
     def get(self, request, cat_slug):
-        posts = Women.objects.filter(cat__slug = self.kwargs['cat_slug'])
-        #print(posts[0].cat)
+        posts = Women.objects.filter(cat__slug=self.kwargs['cat_slug'])
+        # print(posts[0].cat)
         if len(posts) == 0:
             raise Http404
 
         context = {
-            'title': posts[0].cat, # есть идеи?
+            'title': posts[0].cat,  # есть идеи?
             'posts': posts,
             'cat_selected': self.kwargs['cat_slug']
         }
         return render(request, 'women/index.html', context=context)
+
 
 # class ShowCategory(ListView):
 #     model = Category
@@ -196,6 +200,7 @@ class ShowCategory(View):
 
 class AddPage(View):
     form_class = AddPostForm
+
     template_name = 'women/addpage.html'
     success_url = reverse_lazy('home')
 
@@ -205,7 +210,7 @@ class AddPage(View):
         return render(request, self.template_name, context=context)
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST, request.FILES) # зачем в скобках реквест пост?
+        form = self.form_class(request.POST, request.FILES)  # зачем в скобках реквест пост?
         context = {'title': 'Добавить статью', 'form': form}
         if form.is_valid():
             form.save()

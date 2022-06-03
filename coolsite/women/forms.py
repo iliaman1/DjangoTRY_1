@@ -28,6 +28,7 @@ class MakeRequest(forms.Form):
 
     make_req = forms.CharField(label='Запрос')
 
+
     # fields = '__all__' title = forms.CharField(max_length=255, label='Заголовок', widget=forms.TextInput(attrs={
     # 'class': 'form-input'})) #widget=forms.TextInput(attrs={'class': 'form-input'}) для своих стилей slug =
     # forms.SlugField(max_length=255, label='URL') content = forms.CharField(widget=forms.Textarea(attrs={'cols': 60,

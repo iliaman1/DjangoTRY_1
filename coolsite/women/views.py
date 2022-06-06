@@ -124,7 +124,7 @@ class ShowPost(View):
 
     def get(self, request, post_slug):
         post = get_object_or_404(Women, slug=post_slug)
-        comments = Comment.objects.filter(post=post.pk)
+        comments = Comment.objects.filter(post_id=post.pk)
         form_comment = self.form_comment
         context = {'post': post, 'title': post.title, 'cat_selected': post.cat.slug,
                    'comments': comments, 'form_comment': form_comment}
@@ -132,8 +132,8 @@ class ShowPost(View):
 
     def post(self, request, post_slug):
         post = get_object_or_404(Women, slug=post_slug)
-        comments = Comment.objects.filter(post=post.pk)
-        form_comment = self.form_comment(request.POST)
+        comments = Comment.objects.filter(post_id=post.pk)
+        form_comment = self.form_comment
         context = {'post': post, 'title': post.title, 'cat_selected': post.cat.slug,
                    'comments': comments, 'form_comment': form_comment}
         if request.POST.get('like'):
@@ -142,14 +142,15 @@ class ShowPost(View):
         elif request.POST.get('dislike'):
             post.like -= 1
             post.save()
-        elif request.POST.get('comment'):
+        elif 'comment' in request.POST:
+            form_comment = self.form_comment(request.POST)
             if form_comment.is_valid():
                 email = form_comment.cleaned_data['email']
                 content = form_comment.cleaned_data['content']
-                go_in_bd = Comment(email=email, content=content, like=0, post=post.pk)
+                go_in_bd = Comment(email=email, content=content, post_id=post.pk)
                 go_in_bd.save()
             else:
-                form_comment = self.form_comment()
+                form_comment = self.form_comment() # ошибку в контент форм коментс еррор
 
         return render(request, self.template_name, context=context)
 

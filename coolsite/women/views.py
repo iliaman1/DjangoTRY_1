@@ -119,21 +119,34 @@ class ShowSQL(View):
 
 
 class ShowPost(View):
+    form_comment = AddCommentForm
 
     def get(self, request, post_slug):
         post = get_object_or_404(Women, slug=post_slug)
-        context = {'post': post, 'title': post.title, 'cat_selected': post.cat.slug}
+        comments = Comment.objects.filter(post = post.pk)
+        form_comment = self.form_comment
+        context = {'post': post, 'title': post.title, 'cat_selected': post.cat.slug,
+                   'comments': comments, 'form_comment': form_comment}
         return render(request, 'women/post.html', context=context)
 
     def post(self, request, post_slug):
         post = get_object_or_404(Women, slug=post_slug)
-        context = {'post': post, 'title': post.title, 'cat_selected': post.cat.slug}
+        comments = Comment.objects.filter(post=post.pk)
+        form_comment = self.form_comment(request.POST)
+        context = {'post': post, 'title': post.title, 'cat_selected': post.cat.slug,
+                   'comments': comments, 'form_comment': form_comment}
         if request.POST.get('like'):
             post.like += 1
             post.save()
         elif request.POST.get('dislike'):
             post.like -= 1
             post.save()
+        elif request.POST.get('comment'):
+            if form_comment.is_valid():
+                form_comment.save()
+            # else:
+            #     form_comment = self.form_comment()
+
         return render(request, 'women/post.html', context=context)
 
     # def processing_like(self, request, post):
@@ -209,6 +222,7 @@ class AddPage(View):
 
     def get(self, request, *args, **kwargs):
         form = self.form_class
+
         context = {'title': 'Добавить статью', 'form': form}
         return render(request, self.template_name, context=context)
 

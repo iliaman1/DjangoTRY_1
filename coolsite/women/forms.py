@@ -24,6 +24,16 @@ class AddPostForm(forms.ModelForm):
         return title
 
 
+class AddCommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['email', 'content']
+        widgets = {
+            'email': forms.EmailInput,
+            'content': forms.Textarea(attrs={'cols': 60, 'rows': 5}),
+        }
+
+
 class MakeRequest(forms.Form):
 
     make_req = forms.CharField(label='Запрос')

@@ -120,14 +120,15 @@ class ShowSQL(View):
 
 class ShowPost(View):
     form_comment = AddCommentForm
+    template_name = 'women/post.html'
 
     def get(self, request, post_slug):
         post = get_object_or_404(Women, slug=post_slug)
-        comments = Comment.objects.filter(post = post.pk)
+        comments = Comment.objects.filter(post=post.pk)
         form_comment = self.form_comment
         context = {'post': post, 'title': post.title, 'cat_selected': post.cat.slug,
                    'comments': comments, 'form_comment': form_comment}
-        return render(request, 'women/post.html', context=context)
+        return render(request, self.template_name, context=context)
 
     def post(self, request, post_slug):
         post = get_object_or_404(Women, slug=post_slug)
@@ -143,11 +144,14 @@ class ShowPost(View):
             post.save()
         elif request.POST.get('comment'):
             if form_comment.is_valid():
-                form_comment.save()
-            # else:
-            #     form_comment = self.form_comment()
+                email = form_comment.cleaned_data['email']
+                content = form_comment.cleaned_data['content']
+                go_in_bd = Comment(email=email, content=content, like=0, post=post.pk)
+                go_in_bd.save()
+            else:
+                form_comment = self.form_comment()
 
-        return render(request, 'women/post.html', context=context)
+        return render(request, self.template_name, context=context)
 
     # def processing_like(self, request, post):
     #     if request.GET.get('like'):

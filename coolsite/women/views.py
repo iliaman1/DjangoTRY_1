@@ -151,7 +151,11 @@ class ShowPost(View):
                 go_in_bd.save()
             else:
                 form_comment = self.form_comment() # ошибку в контент форм коментс еррор
-
+        elif 'comment-like' in request.POST:
+            comment_id = request.POST.get('comment-like')
+            comment = Comment.objects.get(pk=comment_id)
+            comment.like += 1
+            comment.save()
         return render(request, self.template_name, context=context)
 
     # def processing_like(self, request, post):

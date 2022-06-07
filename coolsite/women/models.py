@@ -32,6 +32,9 @@ class Comment(models.Model):
     like = models.IntegerField(default=0, verbose_name='Лайки')
     post = models.ForeignKey('Women', on_delete=models.PROTECT, verbose_name='Пост')
 
+    def get_absolute_url(self):
+        return reverse('post', kwargs={'post_slug': self.post.slug})
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100, db_index=True, verbose_name='Название категории')

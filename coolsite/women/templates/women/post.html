@@ -25,8 +25,22 @@
 <button type="submit" name="comment">Коментировать</button>
 </form>
 
+<ul class="list-comment">
 {% for coment in comments %}
-    {{ coment.email }}
+    <li>
+    <div class="comment-panel">
+        <p class="first">Чел: {{ coment.email }}</p>
+        <p class="last">Время: {{ coment.time_create|date:"d-m-Y H:i:s" }}</p>
+    </div>
     {{ coment.content }}
+    <div class="clear"></div>
+        <form action="{{ coment.get_absolute_url }}" method="post">{% csrf_token %}
+	<button type="submit" name="comment-like" value="{{ coment.pk }}">Лайк {{ coment.like }}</button>
+        </form>
+    </li>
+
+
 {% endfor %}
+</ul>
+
 {% endblock %}

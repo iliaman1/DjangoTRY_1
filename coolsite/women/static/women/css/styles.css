@@ -404,4 +404,37 @@ ul.lang-list li a:hover {color: #fdc073;}
     font-size: 16px;
 }
 
+ul.list-comment {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+ul.list-comment li {
+	border-bottom: 1px solid #ccc;
+}
 
+div.comment-panel {
+    background: #eee;
+    padding: 5px 10px 5px 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+    color: #555;
+}
+div.comment-panel p.first {
+    margin: 0;
+    float: left;
+}
+div.comment-panel p.last {
+    margin: 0;
+    float: right;
+}
+p.link-like-comment {
+	text-align: right;
+}
+p.link-like-comment a {
+	padding: 10px;
+	min-width: 100px;
+	background: #333671;
+	color: #fff;
+	text-decoration: none;
+}

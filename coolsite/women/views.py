@@ -173,6 +173,19 @@ def categories(request, catid):
     return HttpResponse(f"<h1>Статьи по категориям</h1><p>{catid}</p>")
 
 
+class TopRaited(View):
+    def get(self, request):
+        posts = Women.objects.all().order_by('-like')
+        # print(posts[0].cat)
+
+        context = {
+            'title': "Топ статей",  # есть идеи?
+            'posts': posts,
+            'cat_selected': 0
+        }
+        return render(request, 'women/index.html', context=context)
+
+
 class ShowCategory(View):
     def get(self, request, cat_slug):
         posts = Women.objects.filter(cat__slug=self.kwargs['cat_slug'])

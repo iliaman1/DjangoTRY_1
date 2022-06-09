@@ -1,5 +1,6 @@
 from django import template
 from women.models import *
+from django.contrib import auth
 
 register = template.Library()
 
@@ -30,4 +31,7 @@ def show_menu():
             {'title': "SQL запросики", 'url_name': 'showsql'},
             {'title': "Топ дев", 'url_name': 'toprait'},
             {'title': "Войти", 'url_name': 'login'}]
+    # if user.is_authenticated:
+    #     menu.pop(1)
+
     return {"menu": menu}

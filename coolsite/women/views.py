@@ -2,10 +2,12 @@ from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.db import connection
 from .models import *
 from .forms import *
+from .utils import *
 
 
 class WomenHome(View):
@@ -236,11 +238,12 @@ class ShowCategory(View):
 #     return render(request, 'women/index.html', context=context)
 
 
-class AddPage(View):
+class AddPage(LoginRequiredMixin, View):
     form_class = AddPostForm
-
     template_name = 'women/addpage.html'
     success_url = reverse_lazy('home')
+    login_url = reverse_lazy('home')
+    #raise_exception = True        выдаст 403
 
     def get(self, request, *args, **kwargs):
         form = self.form_class

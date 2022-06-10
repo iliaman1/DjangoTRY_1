@@ -45,6 +45,32 @@
 	<div class="content-text">
 {% block content %}
 {% endblock %}
+{% if posts.has_other_pages %}
+    <nav class="list-pages">
+        <ul>
+            {% if posts.has_previous %}
+                <li class="page-num">
+                <a href="?page={{ posts.previous_page_number }}">&lt;</a>
+                </li>
+            {% endif %}
+            {% for p in posts.paginator.page_range %}
+                {% if posts.number == p %}
+                    <li class="page-num page-num-selected">{{ p }}</li>
+                {% elif p >= posts.number|add:-2 and p <= posts.number|add:2 %}
+                    <li class="page-num">
+                        <a class="list-pages" href="?page={{ p }}">{{ p }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            {% if posts.has_next %}
+                <li class="page-num">
+                    <a href="?page={{ posts.next_page_number }}">&gt;</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}
+
 	</div>
 <!-- Конец блока контента -->
 

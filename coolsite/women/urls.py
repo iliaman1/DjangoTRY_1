@@ -8,6 +8,7 @@ urlpatterns = [
     path('addpage/', AddPage.as_view(), name='add_page'),
     path('contact/', contact, name='contact'),
     path('login/', login, name='login'),
+    path('register/', RegisterUser.as_view(), name='register'),
     path('top/', TopRaited.as_view(), name='toprait'),
     #path('post/<slug:post_slug>/', ShowPost.as_view(), name='post'),
     path('post/<slug:post_slug>', ShowPost.as_view(), name= 'post'),

@@ -29,8 +29,7 @@ def show_menu():
             {'title': "Добавить статью", 'url_name': 'add_page'},
             {'title': "Обратная связь", 'url_name': 'contact'},
             {'title': "SQL запросики", 'url_name': 'showsql'},
-            {'title': "Топ дев", 'url_name': 'toprait'},
-            {'title': "Войти", 'url_name': 'login'}]
+            {'title': "Топ дев", 'url_name': 'toprait'}]
     # if user.is_authenticated:
     #     menu.pop(1)
 

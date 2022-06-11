@@ -141,8 +141,6 @@ class ShowPost(View):
         post = get_object_or_404(Women, slug=post_slug)
         comments = Comment.objects.filter(post_id=post.pk)
         form_comment = self.form_comment
-        context = {'post': post, 'title': post.title, 'cat_selected': post.cat.slug,
-                   'comments': comments, 'form_comment': form_comment}
         if 'like' in request.POST:
             post.like += 1
             post.save()
@@ -163,6 +161,8 @@ class ShowPost(View):
             comment = Comment.objects.get(pk=comment_id)
             comment.like += 1
             comment.save()
+        context = {'post': post, 'title': post.title, 'cat_selected': post.cat.slug,
+                   'comments': comments, 'form_comment': form_comment}
         return render(request, self.template_name, context=context)
 
     # def processing_like(self, request, post):
@@ -250,7 +250,7 @@ class AddPage(LoginRequiredMixin, View):
     form_class = AddPostForm
     template_name = 'women/addpage.html'
     success_url = reverse_lazy('home')
-    login_url = reverse_lazy('home')
+    login_url = reverse_lazy('login')
     #raise_exception = True        выдаст 403
 
     def get(self, request, *args, **kwargs):
@@ -261,11 +261,11 @@ class AddPage(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, request.FILES)  # зачем в скобках реквест пост?
-        context = {'title': 'Добавить статью', 'form': form}
         if form.is_valid():
             form.save()
         else:
             form = self.form_class()
+        context = {'title': 'Добавить статью', 'form': form}
         return render(request, self.template_name, context=context)
 
 
@@ -293,6 +293,26 @@ class AddPage(LoginRequiredMixin, View):
 
 def contact(request):
     return HttpResponse("Обратная связь")
+
+
+class RegisterUser(View):
+    form_class = RegisterUserForm
+    template_name = 'women/register.html'
+    #success_url = reverse_lazy('login')
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class
+        context = {'title': 'Регистрация', 'form': form}
+        return render(request, self.template_name, context=context)
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)  # зачем в скобках реквест пост?
+        if form.is_valid():
+            form.save()
+        else:
+            form = self.form_class()
+        context = {'title': 'Регистрация', 'form': form}
+        return render(request, self.template_name, context=context)
 
 
 def login(request):

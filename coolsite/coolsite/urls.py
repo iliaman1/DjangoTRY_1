@@ -21,6 +21,7 @@ from coolsite import settings
 from women.views import *
 
 urlpatterns = [
+    path('__debug__/', include('debug_toolbar.urls')),
     path('admin/', admin.site.urls),
     path('', include('women.urls')),
 ]

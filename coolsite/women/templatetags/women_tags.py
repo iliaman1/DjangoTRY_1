@@ -24,13 +24,13 @@ def show_categories(sort=None, cat_selected=None):
 
 
 @register.inclusion_tag('usertags/list_menu.html')
-def show_menu():
+def show_menu(*args, **kwargs):
     menu = [{'title': "О сайте", 'url_name': 'about'},
             {'title': "Добавить статью", 'url_name': 'add_page'},
             {'title': "Обратная связь", 'url_name': 'contact'},
             {'title': "SQL запросики", 'url_name': 'showsql'},
             {'title': "Топ дев", 'url_name': 'toprait'}]
-    # if user.is_authenticated:
+    # if not user.is_authenticated:
     #     menu.pop(1)
 
     return {"menu": menu}

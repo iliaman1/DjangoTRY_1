@@ -1,5 +1,5 @@
+from django.contrib.auth import logout, login
 from django.contrib.auth.views import LoginView
-from django.contrib.auth.forms import AuthenticationForm
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
@@ -17,6 +17,7 @@ class WomenHome(View):
     model = Women  # да это лишняя строчка
 
     def get(self, request):
+
         posts = Women.objects.all()
         paginator = Paginator(posts, 5)
         page_number = request.GET.get('page')
@@ -312,28 +313,37 @@ class RegisterUser(View):
         if form.is_valid():
             form.save()
         else:
-            form = self.form_class()
+            errors = {}
+            for error in form.errors:
+                # Теоретически у поля может быть несколько ошибок...
+                errors[error] = form.errors[error][0]
+            context = {'title': 'Регистрация', 'form': form, 'errors': errors}
+            return render(request, self.template_name, context=context)
         context = {'title': 'Регистрация', 'form': form}
         return render(request, self.template_name, context=context)
+
+    def form_vaild(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('home')
 
 
 class LoginUser(LoginView):
-    form_class = AuthenticationForm
+    form_class = LoginUserForm
     template_name = 'women/login.html'
 
-    def get(self, request, *args, **kwargs):
-        form = self.form_class
-        context = {'title': 'Авторизация', 'form': form}
-        return render(request, self.template_name, context=context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Авторизация'
+        return context
 
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            form.save()
-        else:
-            form = self.form_class()
-        context = {'title': 'Регистрация', 'form': form}
-        return render(request, self.template_name, context=context)
+    def get_success_url(self):
+        return reverse_lazy('home')
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('login')
 
 
 def page_not_found(request, exception):

@@ -1,3 +1,5 @@
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.forms import AuthenticationForm
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
@@ -315,9 +317,24 @@ class RegisterUser(View):
         return render(request, self.template_name, context=context)
 
 
-def login(request):
-    return HttpResponse("Авторизация")
+class LoginUser(LoginView):
+    form_class = AuthenticationForm
+    template_name = 'women/login.html'
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class
+        context = {'title': 'Авторизация', 'form': form}
+        return render(request, self.template_name, context=context)
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+        else:
+            form = self.form_class()
+        context = {'title': 'Регистрация', 'form': form}
+        return render(request, self.template_name, context=context)
 
 
-def pageNotFound(request, exception):
+def page_not_found(request, exception):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')

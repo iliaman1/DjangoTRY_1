@@ -1,11 +1,12 @@
 {% extends 'women/base.html' %}
+{% load mathfilters %}
 
 {% block content %}
 <ul class="list-articles">
 	{% for p in posts %}
 			<li>
 				<div class="article-panel">
-					<p class="first">Категория: {{p.cat}}, Рейтинг: {{p.like}}</p>
+					<p class="first">Категория: {{p.cat}}, Рейтинг: {{ p.like|sub:p.dislike }}</p>
 					<p class="last">Дата: {{p.time_update|date:"d-m-Y H:i:s"}}</p>
 				</div>
 

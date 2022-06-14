@@ -4,6 +4,7 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
+from django.db.models import *
 from django.views.generic import ListView, DetailView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
@@ -17,7 +18,6 @@ class WomenHome(View):
     model = Women  # да это лишняя строчка
 
     def get(self, request):
-
         posts = Women.objects.all()
         paginator = Paginator(posts, 2)
         page_number = request.GET.get('page')
@@ -194,7 +194,7 @@ def categories(request, catid):
 
 class TopRaited(View):
     def get(self, request):
-        posts = Women.objects.all().order_by('-like')
+        posts = Women.objects.all().order_by(-F('like')+F('dislike'))
         # print(posts[0].cat)
 
         context = {
@@ -208,7 +208,7 @@ class TopRaited(View):
 class ShowCategory(View):
     def get(self, request, cat_slug):
         posts = Women.objects.filter(cat__slug=self.kwargs['cat_slug'])
-        paginator = Paginator(posts, 5)
+        paginator = Paginator(posts, 2)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         # print(posts[0].cat)

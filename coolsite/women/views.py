@@ -19,7 +19,7 @@ class WomenHome(View):
     def get(self, request):
 
         posts = Women.objects.all()
-        paginator = Paginator(posts, 5)
+        paginator = Paginator(posts, 2)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
@@ -148,7 +148,7 @@ class ShowPost(View):
             post.like += 1
             post.save()
         elif 'dislike' in request.POST:
-            post.like -= 1
+            post.dislike += 1
             post.save()
         elif 'comment' in request.POST:
             form_comment = self.form_comment(request.POST)
@@ -163,6 +163,11 @@ class ShowPost(View):
             comment_id = request.POST.get('comment-like')
             comment = Comment.objects.get(pk=comment_id)
             comment.like += 1
+            comment.save()
+        elif 'comment-dislike' in request.POST:
+            comment_id = request.POST.get('comment-dislike')
+            comment = Comment.objects.get(pk=comment_id)
+            comment.dislike += 1
             comment.save()
         context = {'post': post, 'title': post.title, 'cat_selected': post.cat.slug,
                    'comments': comments, 'form_comment': form_comment}

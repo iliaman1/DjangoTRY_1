@@ -11,7 +11,7 @@
 <form action="" method="POST" >
     {% csrf_token %}
     <input class="postlike" type="submit" name="like" value=" Нажми меня нежно {{ post.like }}">
-    <input class="postlike" type="submit" name="dislike" value=" Нажми меня c хейтом {{ post.like }}">
+    <input class="postlike" type="submit" name="dislike" value=" Нажми меня c хейтом {{ post.dislike }}">
 </form>
 
 <form action="" method="post">
@@ -36,6 +36,7 @@
     <div class="clear"></div>
         <form action="{{ coment.get_absolute_url }}" method="post">{% csrf_token %}
 	<button type="submit" name="comment-like" value="{{ coment.pk }}">Лайк {{ coment.like }}</button>
+    <button type="submit" name="comment-dislike" value="{{ coment.pk }}">Дизлайк {{ coment.dislike }}</button>
         </form>
     </li>
 

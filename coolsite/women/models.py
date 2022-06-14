@@ -10,6 +10,7 @@ class Women(models.Model):
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
     time_update = models.DateTimeField(auto_now=True, verbose_name='Время изменения')
     like = models.IntegerField(default=0, verbose_name='Лайки')
+    dislike = models.IntegerField(default=0, verbose_name='Дизлайки')
     is_published = models.BooleanField(default=True, verbose_name='Публикация')
     cat = models.ForeignKey('Category', on_delete=models.PROTECT, verbose_name='Категория')
 
@@ -30,6 +31,7 @@ class Comment(models.Model):
     content = models.TextField(blank=True, verbose_name='Текст коментария')
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Время публикации')
     like = models.IntegerField(default=0, verbose_name='Лайки')
+    dislike = models.IntegerField(default=0, verbose_name='Дизлайки')
     post = models.ForeignKey('Women', on_delete=models.PROTECT, verbose_name='Пост')
 
     def get_absolute_url(self):

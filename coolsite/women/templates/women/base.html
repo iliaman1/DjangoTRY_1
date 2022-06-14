@@ -56,6 +56,9 @@
 {% if posts.has_other_pages %}
     <nav class="list-pages">
         <ul>
+                <li class="page-num">
+                <a href="?page={{ posts.start_index }}">&lt;</a>
+                </li>
             {% if posts.has_previous %}
                 <li class="page-num">
                 <a href="?page={{ posts.previous_page_number }}">&lt;</a>
@@ -70,9 +73,15 @@
                     </li>
                 {% endif %}
             {% endfor %}
+                {% if posts.number|add:2 < posts.paginator.num_pages %}
+                    <li class="page-num page-num-selected">...</li>
+                {% endif %}
+
+
+
             {% if posts.has_next %}
                 <li class="page-num">
-                    <a href="?page={{ posts.next_page_number }}">&gt;</a>
+                    <a href="?page={{ posts.next_page_number }}">&gt</a>
                 </li>
             {% endif %}
         </ul>

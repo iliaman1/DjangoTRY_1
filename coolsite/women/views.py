@@ -112,7 +112,7 @@ class ShowPost(View):
 
     def get(self, request, post_slug):
         post = get_object_or_404(Women, slug=post_slug)
-        comments = Comment.objects.filter(post_id=post.pk)
+        comments = Comment.objects.filter(post_id=post.pk).select_related('post')
         form_comment = self.form_comment
         context = {'post': post, 'title': post.title, 'cat_selected': post.cat.slug,
                    'comments': comments, 'form_comment': form_comment}
@@ -172,7 +172,7 @@ def categories(request, catid):
 
 class TopRaited(View):
     def get(self, request):
-        posts = Women.objects.all().order_by(-F('like')+F('dislike'))
+        posts = Women.objects.all().order_by(-F('like')+F('dislike')).select_related('cat')
         paginator = Paginator(posts, 2)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
@@ -188,7 +188,7 @@ class TopRaited(View):
 
 class ShowCategory(View):
     def get(self, request, cat_slug):
-        posts = Women.objects.filter(cat__slug=self.kwargs['cat_slug'])
+        posts = Women.objects.filter(cat__slug=self.kwargs['cat_slug']).select_related('cat')
         paginator = Paginator(posts, 2)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)

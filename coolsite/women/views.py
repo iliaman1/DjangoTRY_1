@@ -18,7 +18,7 @@ class WomenHome(View):
     model = Women  # да это лишняя строчка
 
     def get(self, request):
-        posts = Women.objects.all()
+        posts = Women.objects.all().select_related('cat')
         paginator = Paginator(posts, 2)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
@@ -49,28 +49,6 @@ class WomenHome(View):
         context['menu'] = menu # по этому ключу передавал бы меню (список словарей)
         return context
     '''
-
-
-class ShowSQL(View):
-    form_class = MakeRequest
-    template_name = 'women/sql.html'
-    success_url = reverse_lazy('showsql')
-
-    def get(self, request):
-        form = self.form_class
-        context = {'title': 'Запросики',
-                   'form': form}
-        return render(request, self.template_name, context=context)
-
-    def post(self, request):
-        form = self.form_class(request.POST)
-
-        context = {
-            'title': 'Запросики',
-            'form': form,
-            'sql': connection.queries
-        }
-        return render(request, self.template_name, context=context)
 
 
 # def index(request):

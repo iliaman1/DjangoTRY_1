@@ -13,6 +13,5 @@ urlpatterns = [
     path('top/', TopRaited.as_view(), name='toprait'),
     #path('post/<slug:post_slug>/', ShowPost.as_view(), name='post'),
     path('post/<slug:post_slug>', ShowPost.as_view(), name= 'post'),
-    path('category/<slug:cat_slug>/', ShowCategory.as_view(), name='category'),
-    path('sql/', ShowSQL.as_view(), name='showsql')
+    path('category/<slug:cat_slug>/', ShowCategory.as_view(), name='category')
 ]

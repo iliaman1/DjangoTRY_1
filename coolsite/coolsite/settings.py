@@ -13,6 +13,8 @@ import os.path
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+import django.core.cache.backends.filebased
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -163,4 +165,9 @@ if DEBUG:
     mimetypes.add_type("application/javascript", ".js", True)
 #LOGOUT_REDIRECT_URL = '/' перенаправление после авторизации
 
-
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'coolsite_cache'),
+    }
+}

@@ -24,6 +24,7 @@ urlpatterns = [
     path('__debug__/', include('debug_toolbar.urls')),
     path('admin/', admin.site.urls),
     path('', include('women.urls')),
+    path('captcha/', include('captcha.urls')),
 ]
 
 if settings.DEBUG:

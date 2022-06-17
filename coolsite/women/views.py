@@ -280,8 +280,26 @@ class AddPage(LoginRequiredMixin, View):
 #     return render(request, 'women/addpage.html', {'title': 'Добавление статьи', 'form': form, })
 
 
-def contact(request):
-    return HttpResponse("Обратная связь")
+class Contact(View):
+    form_class = ContactForm()
+    template_name = 'women/contact.html'
+
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class
+        context = {'title': 'Есть контакт', 'form': form}
+        return render(request, self.template_name, context=context)
+
+    def post(self, request, *args, **kwargs):
+        form = ContactForm(request.POST)
+        context = {'title': 'Есть контакт', 'form': form}
+        if request.method == 'POST':
+            if form.is_valid():
+                print(form.cleaned_data)
+                return redirect('home')
+            else:
+                return render(request, self.template_name, context=context)
+
 
 
 class RegisterUser(View):

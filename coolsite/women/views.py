@@ -294,6 +294,7 @@ class Contact(View):
         form = ContactForm(request.POST)
         context = {'title': 'Есть контакт', 'form': form}
         if request.method == 'POST':
+            #конфликт версий уходи!!
             #уже залипаю так шо случайно жамкнул аменд
             if form.is_valid():
                 print(form.cleaned_data)

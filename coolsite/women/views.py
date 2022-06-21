@@ -14,18 +14,15 @@ from .forms import *
 from .utils import *
 
 
-class WomenHome(View):
-    model = Women  # да это лишняя строчка
+class WomenHome(DataMixin, View):
 
     def get(self, request):
         posts = Women.objects.all().select_related('cat')
-        paginator = Paginator(posts, 2)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-
-        context = {'title': 'Главная страница',
-                   'posts': page_obj,
-                   'cat_selected': 0}
+        page_obj = self.pagination(2, request, posts)
+        # paginator = Paginator(posts, 2)
+        # page_number = request.GET.get('page')
+        # page_obj = paginator.get_page(page_number)
+        context = self.get_user_context(title='Главная страница', posts=page_obj)
         return render(request, 'women/index.html', context=context)
 
     # class WomenHome(ListView):

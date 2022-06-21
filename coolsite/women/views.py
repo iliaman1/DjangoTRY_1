@@ -151,6 +151,14 @@ class ShowPost(DataMixin, View):
                    'comments': comments, 'form_comment': form_comment}
         return render(request, self.template_name, context=context)
 
+    class Vote:
+
+        @classmethod
+        def like(cls, request, post_slug):
+            return redirect()
+
+
+
     # def processing_like(self, request, post):
     #     if request.GET.get('like'):
     #         post.like += 1

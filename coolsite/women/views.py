@@ -103,7 +103,7 @@ class WomenHome(DataMixin, View):
 #     return render(request, 'women/post.html', context=context)
 
 
-class ShowPost(View):
+class ShowPost(DataMixin, View):
     form_comment = AddCommentForm
     template_name = 'women/post.html'
 
@@ -111,8 +111,9 @@ class ShowPost(View):
         post = get_object_or_404(Women, slug=post_slug)
         comments = Comment.objects.filter(post_id=post.pk).select_related('post')
         form_comment = self.form_comment
-        context = {'post': post, 'title': post.title, 'cat_selected': post.cat.slug,
-                   'comments': comments, 'form_comment': form_comment}
+        # context = {'post': post, 'title': post.title, 'cat_selected': post.cat.slug,
+        #            'comments': comments, 'form_comment': form_comment}
+        context = self.get_user_context(post=post, title=post.title, cat_selected=post.cat.slug, comments=comments, form_comment=form_comment)
         return render(request, self.template_name, context=context)
 
     def post(self, request, post_slug):

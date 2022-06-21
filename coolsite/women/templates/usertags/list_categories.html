@@ -1,7 +1,7 @@
-{% for c in cats %}
-    {% if c.slug == cat_selected %}
-        <li class="selected">{{c.name}}</li>
+{% for post in cats %}
+    {% if post.slug == cat_selected %}
+        <li class="selected">{{post.name}}</li>
     {% else %}
-        <li><a href="{{c.get_absolute_url}}">{{c.name}}</a> </li>
+        <li><a href="{{post.get_absolute_url}}">{{post.name}}</a> </li>
     {% endif %}
 {% endfor %}

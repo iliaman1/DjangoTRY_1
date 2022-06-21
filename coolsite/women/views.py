@@ -14,16 +14,18 @@ from .forms import *
 from .utils import *
 
 
-class WomenHome(DataMixin, View):
+class WomenHome(ListView):
+    context_object_name = 'posts'
+    queryset = Women.objects.select_related('cat')
+    template_name = 'women/index.html'
+    paginate_by = 2
 
-    def get(self, request):
-        posts = Women.objects.all().select_related('cat')
-        page_obj = self.pagination(2, request, posts)
-        # paginator = Paginator(posts, 2)
-        # page_number = request.GET.get('page')
-        # page_obj = paginator.get_page(page_number)
-        context = self.get_user_context(title='Главная страница', posts=page_obj)
-        return render(request, 'women/index.html', context=context)
+
+    # def get(self, request):
+    #     posts = Women.objects.all().select_related('cat')
+    #     page_obj = self.pagination(2, request, posts)
+    #     context = self.get_user_context(title='Главная страница', posts=page_obj)
+    #     return render(request, 'women/index.html', context=context)
 
     # class WomenHome(ListView):
     #     model = Women
@@ -168,7 +170,7 @@ def categories(request, catid):
     return HttpResponse(f"<h1>Статьи по категориям</h1><p>{catid}</p>")
 
 
-class TopRaited(DataMixin ,View):
+class TopRaited(DataMixin, View):
     def get(self, request):
         posts = Women.objects.all().order_by(-F('like')+F('dislike')).select_related('cat')
         page_obj = self.pagination(2, request, posts)
@@ -185,21 +187,22 @@ class TopRaited(DataMixin ,View):
         return render(request, 'women/index.html', context=context)
 
 
-class ShowCategory(View):
+class ShowCategory(DataMixin, View):
     def get(self, request, cat_slug):
         posts = Women.objects.filter(cat__slug=self.kwargs['cat_slug']).select_related('cat')
-        paginator = Paginator(posts, 2)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
+        page_obj = self.pagination(2, request, posts)
+        # paginator = Paginator(posts, 2)
+        # page_number = request.GET.get('page')
+        # page_obj = paginator.get_page(page_number)
         # print(posts[0].cat)
         if len(posts) == 0:
             raise Http404
-
-        context = {
-            'title': posts[0].cat,  # есть идеи?
-            'posts': page_obj,
-            'cat_selected': self.kwargs['cat_slug']
-        }
+        context = self.get_user_context(title=posts[0].cat, posts=page_obj, cat_selected=self.kwargs['cat_slug'])
+        # context = {
+        #     'title': posts[0].cat,  # есть идеи?
+        #     'posts': page_obj,
+        #     'cat_selected': self.kwargs['cat_slug']
+        # }
         return render(request, 'women/index.html', context=context)
 
 

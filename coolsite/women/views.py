@@ -326,6 +326,7 @@ class RegisterUser(View):
         context = {'title': 'Регистрация', 'form': form}
         return render(request, self.template_name, context=context)
 
+    #код который мог бы работать
     def form_vaild(self, form):
         user = form.save()
         login(self.request, user)

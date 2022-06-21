@@ -168,19 +168,20 @@ def categories(request, catid):
     return HttpResponse(f"<h1>Статьи по категориям</h1><p>{catid}</p>")
 
 
-class TopRaited(View):
+class TopRaited(DataMixin ,View):
     def get(self, request):
         posts = Women.objects.all().order_by(-F('like')+F('dislike')).select_related('cat')
-        paginator = Paginator(posts, 2)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
+        page_obj = self.pagination(2, request, posts)
+        # paginator = Paginator(posts, 2)
+        # page_number = request.GET.get('page')
+        # page_obj = paginator.get_page(page_number)
         # print(posts[0].cat)
-
-        context = {
-            'title': "Топ статей",  # есть идеи?
-            'posts': page_obj,
-            'cat_selected': 0
-        }
+        context = self.get_user_context(title='Топ статей', posts=page_obj)
+        # context = {
+        #     'title': "Топ статей",  # есть идеи?
+        #     'posts': page_obj,
+        #     'cat_selected': 0
+        # }
         return render(request, 'women/index.html', context=context)
 
 

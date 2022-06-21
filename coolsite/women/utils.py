@@ -10,8 +10,8 @@ class DataMixin:
             context['cat_selected'] = 0
         return context
 
-    def pagination(self, numbers_pages, request, data):
-        paginator = Paginator(data, numbers_pages)
+    def pagination(self, numbers_obj, request, data):
+        paginator = Paginator(data, numbers_obj)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         return page_obj

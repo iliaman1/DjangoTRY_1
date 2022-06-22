@@ -20,7 +20,6 @@ class WomenHome(ListView):
     template_name = 'women/index.html'
     paginate_by = 2
 
-
     # def get(self, request):
     #     posts = Women.objects.all().select_related('cat')
     #     page_obj = self.pagination(2, request, posts)
@@ -115,20 +114,21 @@ class ShowPost(DataMixin, View):
         form_comment = self.form_comment
         # context = {'post': post, 'title': post.title, 'cat_selected': post.cat.slug,
         #            'comments': comments, 'form_comment': form_comment}
-        context = self.get_user_context(post=post, title=post.title, cat_selected=post.cat.slug, comments=comments, form_comment=form_comment)
+        context = self.get_user_context(post=post, title=post.title, cat_selected=post.cat.slug, comments=comments,
+                                        form_comment=form_comment)
         return render(request, self.template_name, context=context)
 
     def post(self, request, post_slug):
         post = get_object_or_404(Women, slug=post_slug)
         comments = Comment.objects.filter(post_id=post.pk)
         form_comment = self.form_comment
-        if 'like' in request.POST:
-            post.like += 1
-            post.save()
-        elif 'dislike' in request.POST:
-            post.dislike += 1
-            post.save()
-        elif 'comment' in request.POST:
+        # if 'like' in request.POST:
+        #     post.like += 1
+        #     post.save()
+        # elif 'dislike' in request.POST:
+        #     post.dislike += 1
+        #     post.save()
+        if 'comment' in request.POST:
             form_comment = self.form_comment(request.POST)
             if form_comment.is_valid():
                 email = form_comment.cleaned_data['email']
@@ -136,7 +136,7 @@ class ShowPost(DataMixin, View):
                 go_in_bd = Comment(email=email, content=content, post_id=post.pk)
                 go_in_bd.save()
             else:
-                form_comment = self.form_comment() # ошибку в контент форм коментс еррор
+                form_comment = self.form_comment()  # ошибку в контент форм коментс еррор
         elif 'comment-like' in request.POST:
             comment_id = request.POST.get('comment-like')
             comment = Comment.objects.get(pk=comment_id)
@@ -151,13 +151,34 @@ class ShowPost(DataMixin, View):
                    'comments': comments, 'form_comment': form_comment}
         return render(request, self.template_name, context=context)
 
-    class Vote:
 
-        @classmethod
-        def like(cls, request, post_slug):
-            return redirect()
+class Vote:
+    model = None
+    redirect_to = None
+
+    @classmethod
+    def like(cls, request, post_slug):
+        post = get_object_or_404(cls.model, slug=post_slug)
+        post.like += 1
+        post.save()
+        return redirect('post', post_slug=post_slug)
+
+    @classmethod
+    def dislike(cls, request, post_slug):
+        post = get_object_or_404(cls.model, slug=post_slug)
+        post.like -= 1
+        post.save()
+        return redirect('post', post_slug=post_slug)
 
 
+class PostVote(Vote):
+    model = Women
+    redirect_to = 'ShowPost'
+
+
+class CommentVote(Vote):
+    model = Comment
+    redirect_to = 'ShowPost'
 
     # def processing_like(self, request, post):
     #     if request.GET.get('like'):
@@ -180,7 +201,7 @@ def categories(request, catid):
 
 class TopRaited(DataMixin, View):
     def get(self, request):
-        posts = Women.objects.all().order_by(-F('like')+F('dislike')).select_related('cat')
+        posts = Women.objects.all().order_by(-F('like') + F('dislike')).select_related('cat')
         page_obj = self.pagination(2, request, posts)
         # paginator = Paginator(posts, 2)
         # page_number = request.GET.get('page')
@@ -250,7 +271,8 @@ class AddPage(LoginRequiredMixin, View):
     template_name = 'women/addpage.html'
     success_url = reverse_lazy('home')
     login_url = reverse_lazy('login')
-    #raise_exception = True        выдаст 403
+
+    # raise_exception = True        выдаст 403
 
     def get(self, request, *args, **kwargs):
         form = self.form_class
@@ -294,7 +316,6 @@ class Contact(View):
     form_class = ContactForm()
     template_name = 'women/contact.html'
 
-
     def get(self, request, *args, **kwargs):
         form = self.form_class
         context = {'title': 'Есть контакт', 'form': form}
@@ -304,8 +325,8 @@ class Contact(View):
         form = ContactForm(request.POST)
         context = {'title': 'Есть контакт', 'form': form}
         if request.method == 'POST':
-            #конфликт версий уходи!!
-            #уже залипаю так шо случайно жамкнул аменд
+            # конфликт версий уходи!!
+            # уже залипаю так шо случайно жамкнул аменд
             if form.is_valid():
                 print(form.cleaned_data)
                 return redirect('home')
@@ -313,11 +334,11 @@ class Contact(View):
                 return render(request, self.template_name, context=context)
 
 
-
 class RegisterUser(View):
     form_class = RegisterUserForm
     template_name = 'women/register.html'
-    #success_url = reverse_lazy('login')
+
+    # success_url = reverse_lazy('login')
 
     def get(self, request, *args, **kwargs):
         form = self.form_class
@@ -338,7 +359,7 @@ class RegisterUser(View):
         context = {'title': 'Регистрация', 'form': form}
         return render(request, self.template_name, context=context)
 
-    #код который мог бы работать
+    # код который мог бы работать
     def form_vaild(self, form):
         user = form.save()
         login(self.request, user)

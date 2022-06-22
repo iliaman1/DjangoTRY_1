@@ -1,7 +1,7 @@
-from django.urls import path, re_path
-from .views import *
-from django.views.decorators.cache import cache_page
+from django.urls import path, include
 
+from .views import WomenHome, ShowPost, about, AddPage, Contact, LoginUser, logout_user, RegisterUser, TopRaited, \
+    ShowCategory, PostVote, CommentVote
 
 urlpatterns = [
     path('', WomenHome.as_view(), name='home'),
@@ -13,6 +13,12 @@ urlpatterns = [
     path('register/', RegisterUser.as_view(), name='register'),
     path('top/', TopRaited.as_view(), name='toprait'),
     #path('post/<slug:post_slug>/', ShowPost.as_view(), name='post'),
-    path('post/<slug:post_slug>', ShowPost.as_view(), name= 'post'),
+    path('post/<slug:post_slug>', ShowPost.as_view(), name='post'),
+    path('post/<slug:post_slug>/', include([
+        path('like/', PostVote.like),
+        path('dislike/', PostVote.dislike),
+        path('comment_like/', CommentVote.like),
+        path('comment_dislike/', CommentVote.dislike)
+    ])),
     path('category/<slug:cat_slug>/', ShowCategory.as_view(), name='category')
 ]

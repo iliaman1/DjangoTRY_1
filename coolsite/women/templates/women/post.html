@@ -1,47 +1,49 @@
 {% extends 'women/base.html' %}
 
 {% block content %}
-<h1>{{ post.title }}</h1>
 
-{% if post.photo %}
-    <p><img class="img-article-left" src="{{ post.photo.url }}"></p>
-{% endif %}
+    <h1>{{ post.title }}</h1>
 
-{{ post.content|linebreaks }}
-<form action="" method="POST" >
-    {% csrf_token %}
-    <input class="postlike" type="submit" name="like" value=" Нажми меня нежно {{ post.like }}">
-    <input class="postlike" type="submit" name="dislike" value=" Нажми меня c хейтом {{ post.dislike }}">
-</form>
+    {% if post.photo %}
+        <p><img class="img-article-left" src="{{ post.photo.url }}"></p>
+    {% endif %}
 
-<form action="" method="post">
-{% csrf_token %}
-    <div class="form-error">{{ form.non_field_errors }}</div>
+    {{ post.content|linebreaks }}
+    <form action="" method="POST" >
+        {% csrf_token %}
+        <input class="postlike" type="submit" name="like" value=" Нажми меня нежно {{ post.like }}">
+        <input class="postlike" type="submit" name="dislike" value=" Нажми меня c хейтом {{ post.dislike }}">
+    </form>
 
-{% for f in form_comment %}
-<p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>
-<div class="form-error">{{ f.errors }}</div>
-{% endfor %}
-<button type="submit" name="comment">Коментировать</button>
-</form>
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="form-error">{{ form.non_field_errors }}</div>
 
-<ul class="list-comment">
-{% for coment in comments %}
-    <li>
-    <div class="comment-panel">
-        <p class="first">Чел: {{ coment.email }}</p>
-        <p class="last">Время: {{ coment.time_create|date:"d-m-Y H:i:s" }}</p>
-    </div>
-    {{ coment.content }}
-    <div class="clear"></div>
-        <form action="{{ coment.get_absolute_url }}" method="post">{% csrf_token %}
-	<button type="submit" name="comment-like" value="{{ coment.pk }}">Лайк {{ coment.like }}</button>
-    <button type="submit" name="comment-dislike" value="{{ coment.pk }}">Дизлайк {{ coment.dislike }}</button>
-        </form>
-    </li>
+        {% for f in form_comment %}
+            <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>
+            <div class="form-error">{{ f.errors }}</div>
+        {% endfor %}
 
+        <button type="submit" name="comment">Коментировать</button>
+    </form>
 
-{% endfor %}
-</ul>
+    <ul class="list-comment">
+
+        {% for coment in comments %}
+            <li>
+                <div class="comment-panel">
+                    <p class="first">Чел: {{ coment.email }}</p>
+                    <p class="last">Время: {{ coment.time_create|date:"d-m-Y H:i:s" }}</p>
+                </div>
+                {{ coment.content }}
+                <div class="clear"></div>
+                <form action="{{ coment.get_absolute_url }}" method="post">{% csrf_token %}
+                    <button type="submit" name="comment-like" value="{{ coment.pk }}">Лайк {{ coment.like }}</button>
+                    <button type="submit" name="comment-dislike" value="{{ coment.pk }}">Дизлайк {{ coment.dislike }}</button>
+                </form>
+            </li>
+        {% endfor %}
+
+    </ul>
 
 {% endblock %}

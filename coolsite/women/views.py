@@ -334,6 +334,14 @@ class Contact(View):
                 return render(request, self.template_name, context=context)
 
 
+class LearnJS(View):
+    template_name = 'women/learn_js.html'
+
+    def get(self, request, *args, **kwargs):
+        context = {'title': 'Учим JavaScript'}
+        return render(request, self.template_name, context=context)
+
+
 class RegisterUser(View):
     form_class = RegisterUserForm
     template_name = 'women/register.html'

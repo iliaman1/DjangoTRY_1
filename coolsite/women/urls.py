@@ -1,7 +1,7 @@
 from django.urls import path, include
 
 from .views import WomenHome, ShowPost, about, AddPage, Contact, LoginUser, logout_user, RegisterUser, TopRaited, \
-    ShowCategory, PostVote, CommentVote
+    ShowCategory, PostVote, CommentVote, LearnJS
 
 urlpatterns = [
     path('', WomenHome.as_view(), name='home'),
@@ -12,6 +12,7 @@ urlpatterns = [
     path('logout/', logout_user, name='logout'),
     path('register/', RegisterUser.as_view(), name='register'),
     path('top/', TopRaited.as_view(), name='toprait'),
+    path('learnjs/', LearnJS.as_view(), name='learnjs'),
     #path('post/<slug:post_slug>/', ShowPost.as_view(), name='post'),
     path('post/<slug:post_slug>', ShowPost.as_view(), name='post'),
     path('post/<slug:post_slug>/', include([

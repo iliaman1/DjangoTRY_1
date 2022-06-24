@@ -28,7 +28,8 @@ def show_menu(*args, **kwargs):
     menu = [{'title': "О сайте", 'url_name': 'about'},
             {'title': "Добавить статью", 'url_name': 'add_page'},
             {'title': "Обратная связь", 'url_name': 'contact'},
-            {'title': "Топ дев", 'url_name': 'toprait'}]
+            {'title': "Топ дев", 'url_name': 'toprait'},
+            {'title': "Учим JavaScript", 'url_name': 'learnjs'}]
     # if not user.is_authenticated:
     #     menu.pop(1)
 

@@ -1,5 +1,3 @@
-<script type="text/javascript">
-
 $(document).ready(function() {
     // Add refresh button after field (this can be done in the template as well)
     // {#$('img.captcha').after(#}
@@ -21,5 +19,3 @@ $(document).ready(function() {
         return false;
     });
 });
-
-</script>

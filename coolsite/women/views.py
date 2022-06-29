@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.db.models import *
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, DetailView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
@@ -157,6 +158,7 @@ class Vote:
     redirect_to = None
 
     @classmethod
+    @csrf_exempt
     def like(cls, request, post_slug):
         post = get_object_or_404(cls.model, slug=post_slug)
         post.like += 1
@@ -164,9 +166,10 @@ class Vote:
         return redirect('post', post_slug=post_slug)
 
     @classmethod
+    @csrf_exempt
     def dislike(cls, request, post_slug):
         post = get_object_or_404(cls.model, slug=post_slug)
-        post.like -= 1
+        post.dislike += 1
         post.save()
         return redirect('post', post_slug=post_slug)
 

@@ -1,0 +1,7 @@
+{% load static %}
+
+<form action="" method="POST" >
+    {% csrf_token %}
+    <input class="postlike" type="submit" name="like" value=" Нажми меня нежно {{ post.like }}">
+    <input class="postlike" type="submit" name="dislike" value=" Нажми меня c хейтом {{ post.dislike }}">
+</form>

@@ -1,4 +1,9 @@
 {% extends 'women/base.html' %}
+{% load static %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'women/js/vote.js' %}"></script>
+{% endblock %}
 
 {% block content %}
 
@@ -9,11 +14,11 @@
     {% endif %}
 
     {{ post.content|linebreaks }}
-    <form action="" method="POST" >
-        {% csrf_token %}
-        <input class="postlike" type="submit" name="like" value=" Нажми меня нежно {{ post.like }}">
-        <input class="postlike" type="submit" name="dislike" value=" Нажми меня c хейтом {{ post.dislike }}">
-    </form>
+
+        <button class="like" id="like" name="like" value=" Нажми меня нежно {{ post.like }}">like {{ post.like }}</button>
+        <button class="like" id="dislike" name="dislike" value=" Нажми меня c хейтом {{ post.dislike }}">dislike</button>
+        <button type="submit" id="content"></button>
+
 
     <form action="" method="post">
         {% csrf_token %}

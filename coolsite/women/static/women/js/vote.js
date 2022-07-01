@@ -12,7 +12,9 @@ $(document).ready(function(){
           url: document.location.href + '/like/',
           success: function(data){
               const regexp = /\d+$/
-              document.getElementById("like").innerHTML = 'likes '+ Number(document.getElementById("like").textContent.match(regexp)[0])+Number(1)
+              tsislo = document.getElementById("like").textContent.match(regexp)[0]
+              tsislo = Number(tsislo)+1
+              document.getElementById("like").innerHTML = 'like ' + tsislo
               console.log('upload success!')
 
           }

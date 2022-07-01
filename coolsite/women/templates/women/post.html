@@ -15,10 +15,8 @@
 
     {{ post.content|linebreaks }}
 
-        <button class="like" id="like" name="like" value={{ post.like }}>like {{ post.like }}</button>
-        <button class="like" id="dislike" name="dislike" value=" Нажми меня c хейтом {{ post.dislike }}">dislike</button>
-        <button type="submit" id="content"></button>
-
+        <button class="like" id="like" name="like" value={{ post.like }}>Лайк {{ post.like }}</button>
+        <button class="like" id="dislike" name="dislike" value={{ post.dislike }}>Дизлайк {{ post.dislike }}</button>
 
     <form action="" method="post">
         {% csrf_token %}
@@ -43,8 +41,8 @@
                 {{ coment.content }}
                 <div class="clear"></div>
                 <form action="{{ coment.get_absolute_url }}" method="post">{% csrf_token %}
-                    <button type="submit" name="comment-like" value="{{ coment.pk }}">Лайк {{ coment.like }}</button>
-                    <button type="submit" name="comment-dislike" value="{{ coment.pk }}">Дизлайк {{ coment.dislike }}</button>
+                    <button type="submit" id="like-comment" name="comment-like" value={{ coment.pk }}>Лайк {{ coment.like }}</button>
+                    <button type="submit" id="dislike-comment" name="comment-dislike" value={{ coment.pk }}>Дизлайк {{ coment.dislike }}</button>
                 </form>
             </li>
         {% endfor %}

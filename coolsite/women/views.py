@@ -1,7 +1,7 @@
 from django.contrib.auth import logout, login
 from django.contrib.auth.views import LoginView
 from django.core.paginator import Paginator
-from django.http import HttpResponse, HttpResponseNotFound, Http404
+from django.http import HttpResponse, HttpResponseNotFound, Http404, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.db.models import *
@@ -161,6 +161,7 @@ class Vote:
     @csrf_exempt
     def like(cls, request, post_slug):
         post = get_object_or_404(cls.model, slug=post_slug)
+
         post.like += 1
         post.save()
         return redirect('post', post_slug=post_slug)

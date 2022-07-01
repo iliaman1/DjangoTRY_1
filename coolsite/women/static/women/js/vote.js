@@ -3,19 +3,17 @@ $(document).ready(function(){
 
         console.log('upload button clicked!')
         var fd = new FormData();
-        var test = document.getElementById("like");
-        var numbers = test.match(/\d{2}/g);
-        test = test.replace(/\d+$/, Number.parseInt(numbers[0], 10)+1)
-        console.log(test);
+
         $.ajax({
-          url: '/post/gestiya/like/',
           data: fd,
           processData: false,
           contentType: false,
           type: 'POST',
+          url: document.location.href + '/like/',
           success: function(data){
-
-            console.log('upload success!')
+              const regexp = /\d+$/
+              document.getElementById("like").innerHTML = 'likes '+ Number(document.getElementById("like").textContent.match(regexp)[0])+Number(1)
+              console.log('upload success!')
 
           }
         });

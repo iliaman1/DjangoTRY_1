@@ -16,8 +16,8 @@ urlpatterns = [
     #path('post/<slug:post_slug>/', ShowPost.as_view(), name='post'),
     path('post/<slug:post_slug>', ShowPost.as_view(), name='post'),
     path('post/<slug:post_slug>/', include([
-        path('like/', PostVote.like),
-        path('dislike/', PostVote.dislike),
+        path('like/', PostVote.like, name='postlike'),
+        path('dislike/', PostVote.dislike, name='postdislike'),
         path('comment_like/', CommentVote.like),
         path('comment_dislike/', CommentVote.dislike)
     ])),

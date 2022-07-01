@@ -15,7 +15,7 @@
 
     {{ post.content|linebreaks }}
 
-        <button class="like" id="like" name="like">like {{ post.like }}</button>
+        <button class="like" id="like" name="like" value={{ post.like }}>like {{ post.like }}</button>
         <button class="like" id="dislike" name="dislike" value=" Нажми меня c хейтом {{ post.dislike }}">dislike</button>
         <button type="submit" id="content"></button>
 

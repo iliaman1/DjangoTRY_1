@@ -11,10 +11,8 @@ $(document).ready(function(){
           type: 'POST',
           url: document.location.href + '/like/',
           success: function(data){
-              const regexp = /\d+$/
-              tsislo = document.getElementById("like").textContent.match(regexp)[0]
-              tsislo = Number(tsislo)+1
-              document.getElementById("like").innerHTML = 'like ' + tsislo
+              document.getElementById("like").innerHTML = document.getElementById("like").textContent.replace(/\d+$/, parseInt($('#like').attr('value'), 10)+1);
+              $('#like').val(parseInt($('#like').attr('value'), 10)+1);
               console.log('upload success!')
 
           }

@@ -18,8 +18,8 @@ urlpatterns = [
     path('post/<slug:post_slug>/', include([
         path('like/', PostVote.like, name='postlike'),
         path('dislike/', PostVote.dislike, name='postdislike'),
-        path('comment_like/', CommentVote.like),
-        path('comment_dislike/', CommentVote.dislike)
+        path('comment_like/<int:comment_id>', CommentVote.like, name='commentlike'),
+        path('comment_dislike/<int:comment_id>', CommentVote.dislike, name='commentdislike')
     ])),
     path('category/<slug:cat_slug>/', ShowCategory.as_view(), name='category')
 ]

@@ -15,7 +15,7 @@
 
     {{ post.content|linebreaks }}
 
-        <button class="like" id="like" name="like" value={{ post.like }}>Лайк {{ post.like }}</button>
+        <button class="like" id="like" name="like" value={{ post.like }} data-likes="10">Лайк {{ post.like }}</button>
         <button class="like" id="dislike" name="dislike" value={{ post.dislike }}>Дизлайк {{ post.dislike }}</button>
 
     <form action="" method="post">

@@ -13,6 +13,7 @@ from django.db import connection
 from .models import *
 from .forms import *
 from .utils import *
+from abc import ABC
 
 
 class WomenHome(ListView):
@@ -138,59 +139,57 @@ class ShowPost(DataMixin, View):
                 go_in_bd.save()
             else:
                 form_comment = self.form_comment()  # ошибку в контент форм коментс еррор
-        elif 'comment-like' in request.POST:
-            comment_id = request.POST.get('comment-like')
-            comment = Comment.objects.get(pk=comment_id)
-            comment.like += 1
-            comment.save()
-        elif 'comment-dislike' in request.POST:
-            comment_id = request.POST.get('comment-dislike')
-            comment = Comment.objects.get(pk=comment_id)
-            comment.dislike += 1
-            comment.save()
+        # elif 'comment-like' in request.POST:
+        #     comment_id = request.POST.get('comment-like')
+        #     comment = Comment.objects.get(pk=comment_id)
+        #     comment.like += 1
+        #     comment.save()
+        # elif 'comment-dislike' in request.POST:
+        #     comment_id = request.POST.get('comment-dislike')
+        #     comment = Comment.objects.get(pk=comment_id)
+        #     comment.dislike += 1
+        #     comment.save()
         context = {'post': post, 'title': post.title, 'cat_selected': post.cat.slug,
                    'comments': comments, 'form_comment': form_comment}
         return render(request, self.template_name, context=context)
 
 
-class Vote:
+class Vote(ABC):
     model = None
-    redirect_to = None
+    lookup_field = None
+    lookup_url_kwargs = None
+
+    @classmethod
+    def get_object(cls, **kwargs):
+        return get_object_or_404(cls.model, **kwargs)
 
     @classmethod
     @csrf_exempt
-    def like(cls, request, post_slug):
-        post = get_object_or_404(cls.model, slug=post_slug)
-
-        post.like += 1
-        post.save()
-        return redirect('post', post_slug=post_slug)
+    def like(cls, request, **kwargs):
+        obj = cls.get_object(**{cls.lookup_field: kwargs[cls.lookup_url_kwargs]})
+        obj.like += 1
+        obj.save()
+        return HttpResponse(status=200)
 
     @classmethod
     @csrf_exempt
-    def dislike(cls, request, post_slug):
-        post = get_object_or_404(cls.model, slug=post_slug)
-        post.dislike += 1
-        post.save()
-        return redirect('post', post_slug=post_slug)
+    def dislike(cls, request, **kwargs):
+        obj = cls.get_object(**{cls.lookup_field: kwargs[cls.lookup_url_kwargs]})
+        obj.dislike += 1
+        obj.save()
+        return HttpResponse(status=200)
 
 
 class PostVote(Vote):
     model = Women
-    redirect_to = 'ShowPost'
+    lookup_field = 'slug'
+    lookup_url_kwargs = 'post_slug'
 
 
 class CommentVote(Vote):
     model = Comment
-    redirect_to = 'ShowPost'
-
-    # def processing_like(self, request, post):
-    #     if request.GET.get('like'):
-    #         post.like += 1
-    #         post.save()
-    #     elif request.GET.get('dislike'):
-    #         post.like -= 1
-    #         post.save()
+    lookup_field = 'pk'
+    lookup_url_kwargs = 'comment_id'
 
 
 def about(request):

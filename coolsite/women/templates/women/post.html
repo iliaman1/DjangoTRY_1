@@ -40,10 +40,8 @@
                 </div>
                 {{ coment.content }}
                 <div class="clear"></div>
-                <form action="{{ coment.get_absolute_url }}" method="post">{% csrf_token %}
-                    <button type="submit" id="like-comment" name="comment-like" value={{ coment.pk }}>Лайк {{ coment.like }}</button>
-                    <button type="submit" id="dislike-comment" name="comment-dislike" value={{ coment.pk }}>Дизлайк {{ coment.dislike }}</button>
-                </form>
+                    <button class="like" id="comment_like" name="comment_like" value={{ coment.pk }}>Лайк {{ coment.like }}</button>
+                    <button class="like" id="comment_dislike" name="comment_dislike" value={{ coment.pk }}>Дизлайк {{ coment.dislike }}</button>
             </li>
         {% endfor %}
 

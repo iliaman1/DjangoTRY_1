@@ -20,10 +20,9 @@ $(document).ready(function(){
         });
     }
 
-    function vote_comment_button(id_button){
+    function vote_comment_button(id_button, id_comment){
         console.log('upload button clicked!')
         var fd = new FormData();
-        id_comment = $(`#${id_button}`).val()
         $.ajax({
             data: fd,
             processData: false,
@@ -32,22 +31,33 @@ $(document).ready(function(){
             url: document.location.href + `/${id_button}/` + `${id_comment}`,
             success: function(data)
                 {
-                 console.log( id_comment = $(`#${id_button}`).val())
+                 console.log(id_comment)
                 console.log('upload success!')
                 }
         });
     }
 
     $('#like').click(function(){
-      vote_post_button('like')
+        vote_post_button('like')
     });
     $('#dislike').click(function(){
-      vote_post_button('dislike')
+        vote_post_button('dislike')
     });
-    $('#comment_like').click(function(){
-      vote_comment_button('comment_like')
+
+    backList = document.querySelectorAll("#comment_like");
+    backList.forEach(function (backitem){
+        backitem.click(function (){
+            let id_comment = $(this).val()
+            vote_comment_button('comment_like', id_comment)
+        })
+    })
+
+    $('#comment_like').onclick(function(){
+        id_comment = $(this).val()
+        vote_comment_button('comment_like', id_comment)
     });
+
     $('#comment_dislike').click(function(){
-      vote_comment_button('comment_dislike')
+        vote_comment_button('comment_dislike')
     });
 });

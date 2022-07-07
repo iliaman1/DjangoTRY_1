@@ -40,8 +40,8 @@
                 </div>
                 {{ coment.content }}
                 <div class="clear"></div>
-                    <button class="like" id="comment_like" name="comment_like" value={{ coment.pk }}>Лайк {{ coment.like }}</button>
-                    <button class="like" id="comment_dislike" name="comment_dislike" value={{ coment.pk }}>Дизлайк {{ coment.dislike }}</button>
+                    <button class="comment_like" id="comment_like {{ coment.pk }}" name="comment_like {{ coment.pk }}" value={{ coment.pk }}>Лайк {{ coment.like }}</button>
+                    <button class="comment_dislike" id="comment_dislike {{ coment.pk }}" name="comment_dislike {{ coment.pk }}" value={{ coment.dislike }}>Дизлайк {{ coment.dislike }}</button>
             </li>
         {% endfor %}
 

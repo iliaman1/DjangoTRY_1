@@ -31,8 +31,7 @@ $(document).ready(function(){
             url: document.location.href + `/${id_button}/` + `${id_comment}`,
             success: function(data)
                 {
-                 console.log(id_comment)
-                console.log('upload success!')
+                    console.log('upload success!')
                 }
         });
     }
@@ -44,20 +43,13 @@ $(document).ready(function(){
         vote_post_button('dislike')
     });
 
-    backList = document.querySelectorAll("#comment_like");
-    backList.forEach(function (backitem){
-        backitem.click(function (){
-            let id_comment = $(this).val()
-            vote_comment_button('comment_like', id_comment)
-        })
-    })
-
-    $('#comment_like').onclick(function(){
-        id_comment = $(this).val()
-        vote_comment_button('comment_like', id_comment)
+    $('.comment_like').click(function(){
+        let id_comment = $(this).val()
+        vote_comment_button(`comment_like`, id_comment)
     });
 
-    $('#comment_dislike').click(function(){
-        vote_comment_button('comment_dislike')
+    $('.comment_dislike').click(function(){
+        let id_comment = $(this).val()
+        vote_comment_button('comment_dislike', id_comment)
     });
 });

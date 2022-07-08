@@ -1,55 +1,35 @@
 $(document).ready(function(){
-    function vote_post_button(id_button){
-        console.log('upload button clicked!')
-        var fd = new FormData();
+    class Vote{
+        process(url){
+            $.ajax({
+                data: new FormData(),
+                processData: false,
+                contentType: false,
+                type: 'POST',
+                url: url,
+                success: function (data){
+                    return true
+                }
+            })
+        }
+    }
 
-        $.ajax({
-            data: fd,
-            processData: false,
-            contentType: false,
-            type: 'POST',
-            url: document.location.href + `/${id_button}/`,
-            success: function(data)
-                {
-                console.log($('#like').attr('data-likes'))
-                console.log($('#comment_like').val())
-                document.getElementById(`${id_button}`).innerHTML = document.getElementById(`${id_button}`).textContent.replace(/\d+$/, parseInt($(`#${id_button}`).attr('value'), 10)+1);
-                $(`#${id_button}`).val(parseInt($(`#${id_button}`).attr('value'), 10)+1);
+
+    class PostVote extends Vote{
+        like(post_slug){
+            if(this.process(`/${post_slug}/like`)===true){
+                document.getElementById(`like`).innerHTML = document.getElementById(`like`).textContent.replace(/\d+$/, parseInt($(`#like`).attr('value'), 10)+1);
+                $(`#like`).val(parseInt($(`#like`).attr('value'), 10)+1);
                 console.log('upload success!')
-                }
-        });
+            }
+        }
+
+        dislike(post_slug){
+            if(this.process(`/${post_slug}/dislike`)===true){
+                document.getElementById(`dislike`).innerHTML = document.getElementById(`dislike`).textContent.replace(/\d+$/, parseInt($(`#dislike`).attr('value'), 10)-1);
+                $(`#dislike`).val(parseInt($(`#dislike`).attr('value'), 10)-1);
+                console.log('upload success!')
+            }
+        }
     }
-
-    function vote_comment_button(id_button, id_comment){
-        console.log('upload button clicked!')
-        var fd = new FormData();
-        $.ajax({
-            data: fd,
-            processData: false,
-            contentType: false,
-            type: 'POST',
-            url: document.location.href + `/${id_button}/` + `${id_comment}`,
-            success: function(data)
-                {
-                    console.log('upload success!')
-                }
-        });
-    }
-
-    $('#like').click(function(){
-        vote_post_button('like')
-    });
-    $('#dislike').click(function(){
-        vote_post_button('dislike')
-    });
-
-    $('.comment_like').click(function(){
-        let id_comment = $(this).val()
-        vote_comment_button(`comment_like`, id_comment)
-    });
-
-    $('.comment_dislike').click(function(){
-        let id_comment = $(this).val()
-        vote_comment_button('comment_dislike', id_comment)
-    });
 });

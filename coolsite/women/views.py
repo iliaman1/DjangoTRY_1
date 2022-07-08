@@ -21,6 +21,10 @@ class WomenHome(ListView):
     queryset = Women.objects.select_related('cat')
     template_name = 'women/index.html'
     paginate_by = 2
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['login_form'] = LoginUserForm
+        return context
 
     # def get(self, request):
     #     posts = Women.objects.all().select_related('cat')

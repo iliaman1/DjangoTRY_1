@@ -12,19 +12,20 @@ from django.views import View
 from django.db import connection
 from .models import *
 from .forms import *
-from .utils import *
+from .utils import DataMixin
 from abc import ABC
 
 
-class WomenHome(ListView):
+class WomenHome(DataMixin, ListView):
     context_object_name = 'posts'
     queryset = Women.objects.select_related('cat')
     template_name = 'women/index.html'
     paginate_by = 2
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['login_form'] = LoginUserForm
-        return context
+        c_def = self.get_user_context(title="Главная страница")
+        return dict(list(context.items())+list(c_def.items()))
 
     # def get(self, request):
     #     posts = Women.objects.all().select_related('cat')
@@ -110,52 +111,17 @@ class WomenHome(ListView):
 #     return render(request, 'women/post.html', context=context)
 
 
-class ShowPost(DataMixin, View):
-    form_comment = AddCommentForm
+class ShowPost(DataMixin, DetailView):
+    model = Women
     template_name = 'women/post.html'
+    slug_url_kwarg = 'post_slug'
+    context_object_name = 'post'
 
-    def get(self, request, post_slug):
-        post = get_object_or_404(Women, slug=post_slug)
-        comments = Comment.objects.filter(post_id=post.pk).select_related('post')
-        form_comment = self.form_comment
-        # context = {'post': post, 'title': post.title, 'cat_selected': post.cat.slug,
-        #            'comments': comments, 'form_comment': form_comment}
-        context = self.get_user_context(post=post, title=post.title, cat_selected=post.cat.slug, comments=comments,
-                                        form_comment=form_comment)
-        return render(request, self.template_name, context=context)
-
-    def post(self, request, post_slug):
-        post = get_object_or_404(Women, slug=post_slug)
-        comments = Comment.objects.filter(post_id=post.pk)
-        form_comment = self.form_comment
-        # if 'like' in request.POST:
-        #     post.like += 1
-        #     post.save()
-        # elif 'dislike' in request.POST:
-        #     post.dislike += 1
-        #     post.save()
-        if 'comment' in request.POST:
-            form_comment = self.form_comment(request.POST)
-            if form_comment.is_valid():
-                email = form_comment.cleaned_data['email']
-                content = form_comment.cleaned_data['content']
-                go_in_bd = Comment(email=email, content=content, post_id=post.pk)
-                go_in_bd.save()
-            else:
-                form_comment = self.form_comment()  # ошибку в контент форм коментс еррор
-        # elif 'comment-like' in request.POST:
-        #     comment_id = request.POST.get('comment-like')
-        #     comment = Comment.objects.get(pk=comment_id)
-        #     comment.like += 1
-        #     comment.save()
-        # elif 'comment-dislike' in request.POST:
-        #     comment_id = request.POST.get('comment-dislike')
-        #     comment = Comment.objects.get(pk=comment_id)
-        #     comment.dislike += 1
-        #     comment.save()
-        context = {'post': post, 'title': post.title, 'cat_selected': post.cat.slug,
-                   'comments': comments, 'form_comment': form_comment}
-        return render(request, self.template_name, context=context)
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_comment'] = AddCommentForm
+        c_def = self.get_user_context(title=context['post'])
+        return dict(list(context.items())+list(c_def.items()))
 
 
 class Vote(ABC):
@@ -223,23 +189,19 @@ class TopRaited(DataMixin, View):
         return render(request, 'women/index.html', context=context)
 
 
-class ShowCategory(DataMixin, View):
-    def get(self, request, cat_slug):
-        posts = Women.objects.filter(cat__slug=self.kwargs['cat_slug']).select_related('cat')
-        page_obj = self.pagination(2, request, posts)
-        # paginator = Paginator(posts, 2)
-        # page_number = request.GET.get('page')
-        # page_obj = paginator.get_page(page_number)
-        # print(posts[0].cat)
-        if len(posts) == 0:
-            raise Http404
-        context = self.get_user_context(title=posts[0].cat, posts=page_obj, cat_selected=self.kwargs['cat_slug'])
-        # context = {
-        #     'title': posts[0].cat,  # есть идеи?
-        #     'posts': page_obj,
-        #     'cat_selected': self.kwargs['cat_slug']
-        # }
-        return render(request, 'women/index.html', context=context)
+class ShowCategory(DataMixin, ListView):
+    model = Women
+    template_name = 'women/index.html'
+    context_object_name = 'posts'
+    allow_empty = False
+
+    def get_queryset(self):
+        return Women.objects.filter(cat__slug=self.kwargs['cat_slug']).select_related('cat')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Категория - ' + str(context['posts'][0].cat), cat_selected=self.kwargs['cat_slug'])
+        return dict(list(context.items())+list(c_def.items()))
 
 
 # class ShowCategory(ListView):

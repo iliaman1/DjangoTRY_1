@@ -11,10 +11,13 @@ menu = [{'title': "О сайте", 'url_name': 'about'},
 class DataMixin:
     def get_user_context(self, **kwargs):
         context = kwargs
-        context['menu'] = menu
+        user_menu = menu.copy()
+        if not self.request.user.is_authenticated:
+            user_menu.pop(1)
+            context['login_form'] = LoginUserForm
+        context['menu'] = user_menu
         if 'cat_selected' not in context:
             context['cat_selected'] = 0
-        context['login_form'] = LoginUserForm
         return context
 
     def pagination(self, numbers_obj, request, data):

@@ -27,89 +27,6 @@ class WomenHome(DataMixin, ListView):
         c_def = self.get_user_context(title="Главная страница")
         return dict(list(context.items())+list(c_def.items()))
 
-    # def get(self, request):
-    #     posts = Women.objects.all().select_related('cat')
-    #     page_obj = self.pagination(2, request, posts)
-    #     context = self.get_user_context(title='Главная страница', posts=page_obj)
-    #     return render(request, 'women/index.html', context=context)
-
-    # class WomenHome(ListView):
-    #     model = Women
-    #     template_name = 'women/index.html' #шаблон
-    #     context_object_name = 'posts' # меняем название с дефолтного object_list
-    #
-    #     def get_context_data(self, *, object_list=None, **kwargs):
-    #         context = super().get_context_data(**kwargs)
-    #         context['title'] = 'Главная страница'
-    #         context['cat_selected'] = 0
-    #         return context
-    #
-    #     def get_queryset(self):    # Что выбирать из модели Women
-    #         return Women.objects.filter(is_published=True)
-
-    # extra_context = {'title': 'Главная страница'} # принимает только неизменияемые(статические данные)
-    ''' Если бы меню не передавал в пользовательском теге, передавал бы изменяемый(динамический) контент следующим образом:
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['menu'] = menu # по этому ключу передавал бы меню (список словарей)
-        return context
-    '''
-
-
-# def index(request):
-#     posts = Women.objects.all()
-#     context = {'title': 'Главная страница',
-#                'posts': posts,
-#                'cat_selected': 0}
-#     return render(request, 'women/index.html', context=context)
-
-
-# class ShowPost(DetailView):
-#     model = Women
-#     template_name = 'women/post.html'
-#     slug_url_kwarg = 'post_slug' #вместо дефолтного slug
-#     #а если по id "pk_url_kwarg"
-#     context_object_name = 'post'
-#
-#     def get_context_data(self, *, object_list=None, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['title'] = context['post']
-#         return context
-
-# def get_object(self, queryset=None):
-#     self.post = get_object_or_404(Women, slug=self.kwargs['post_slug'])
-#     return Women.objects.filter(slug=self.kwargs['post_slug'])
-#
-# def get(self, request, *args, **kwargs):
-#     if request.GET.get('like'):
-#         self.post.like += 1
-#         self.post.save()
-#     elif request.GET.get('dislike'):
-#         self.post.like -= 1
-#         self.post.save()
-#     return render(request, 'women/post.html', context=self.get_context_data())
-
-# post = get_object_or_404(Women, slug='post_slug')
-# if request.GET.get('like'):
-#     post.like += 1
-#     post.save()
-# elif request.GET.get('dislike'):
-#     post.like -= 1
-#     post.save()
-
-
-# def show_post(request, post_slug):
-#     post = get_object_or_404(Women, slug=post_slug)
-#     if request.method == 'POST':
-#         if request.POST.get('like'):
-#             post.like += 1
-#             post.save()
-#         elif request.POST.get('dislike'):
-#             post.like -= 1
-#             post.save()
-#     context = {'post': post, 'title': post.title, 'cat_selected': post.cat_id}
-#     return render(request, 'women/post.html', context=context)
-
 
 class ShowPost(DataMixin, DetailView):
     model = Women
@@ -176,16 +93,7 @@ class TopRaited(DataMixin, View):
     def get(self, request):
         posts = Women.objects.all().order_by(-F('like') + F('dislike')).select_related('cat')
         page_obj = self.pagination(2, request, posts)
-        # paginator = Paginator(posts, 2)
-        # page_number = request.GET.get('page')
-        # page_obj = paginator.get_page(page_number)
-        # print(posts[0].cat)
         context = self.get_user_context(title='Топ статей', posts=page_obj)
-        # context = {
-        #     'title': "Топ статей",  # есть идеи?
-        #     'posts': page_obj,
-        #     'cat_selected': 0
-        # }
         return render(request, 'women/index.html', context=context)
 
 
@@ -204,81 +112,16 @@ class ShowCategory(DataMixin, ListView):
         return dict(list(context.items())+list(c_def.items()))
 
 
-# class ShowCategory(ListView):
-#     model = Category
-#     template_name = 'women/index.html'
-#     context_object_name = 'posts'
-#     allow_empty = False #если пустой список object list вернет 404
-#
-#     def get_context_data(self, *, object_list=None, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['title'] = 'Категория - ' + str(context['posts'][0].cat)
-#         context['cat_selected'] = self.kwargs['cat_slug']
-#         return context
-#
-#     def get_queryset(self):
-#         return Women.objects.filter(cat__slug=self.kwargs['cat_slug'], is_published=True)
-
-
-# def show_category(request, cat_slug):
-#     cats = Category.objects.all()
-#     cat = get_object_or_404(Category, slug=cat_slug)
-#     posts = Women.objects.filter(cat_id=cat.id)
-#
-#     if len(posts)==0:
-#         raise Http404()
-#
-#     context = {'title': cat.name,
-#                'posts': posts,
-#                'cats': cats,
-#                'cat_selected': cat.id}
-#     return render(request, 'women/index.html', context=context)
-
-
-class AddPage(LoginRequiredMixin, View):
+class AddPage(LoginRequiredMixin, DataMixin, CreateView):
     form_class = AddPostForm
     template_name = 'women/addpage.html'
     success_url = reverse_lazy('home')
     login_url = reverse_lazy('login')
 
-    # raise_exception = True        выдаст 403
-
-    def get(self, request, *args, **kwargs):
-        form = self.form_class
-
-        context = {'title': 'Добавить статью', 'form': form}
-        return render(request, self.template_name, context=context)
-
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST, request.FILES)  # зачем в скобках реквест пост?
-        if form.is_valid():
-            form.save()
-        else:
-            form = self.form_class()
-        context = {'title': 'Добавить статью', 'form': form}
-        return render(request, self.template_name, context=context)
-
-
-# class AddPage(CreateView):
-#     form_class = AddPostForm
-#     template_name = 'women/addpage.html'
-#     success_url = reverse_lazy('home') #куда идти если не по absolute_url
-#
-#     def get_context_data(self, *, object_list=None, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['title'] = 'Добавить статью'
-#         return context
-
-
-# def addpage(request):
-#     if request.method == 'POST':
-#         form = AddPostForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             form.save()
-#     else:
-#         form = AddPostForm()
-#
-#     return render(request, 'women/addpage.html', {'title': 'Добавление статьи', 'form': form, })
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Добавление статьи')
+        return dict(list(context.items())+list(c_def.items()))
 
 
 class Contact(View):

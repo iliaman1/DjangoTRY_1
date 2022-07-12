@@ -90,12 +90,20 @@ def categories(request, catid):
     return HttpResponse(f"<h1>Статьи по категориям</h1><p>{catid}</p>")
 
 
-class TopRaited(DataMixin, View):
-    def get(self, request):
-        posts = Women.objects.all().order_by(-F('like') + F('dislike')).select_related('cat')
-        page_obj = self.pagination(2, request, posts)
-        context = self.get_user_context(title='Топ статей', posts=page_obj)
-        return render(request, 'women/index.html', context=context)
+class TopRaited(DataMixin, ListView):
+    model = Women
+    template_name = 'women/index.html'
+    context_object_name = 'posts'
+    allow_empty = False
+    paginate_by = 2
+
+    def get_queryset(self):
+        return Women.objects.all().order_by(-F('like') + F('dislike')).select_related('cat')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Топ дев')
+        return dict(list(context.items()) + list(c_def.items()))
 
 
 class ShowCategory(DataMixin, ListView):
@@ -103,6 +111,7 @@ class ShowCategory(DataMixin, ListView):
     template_name = 'women/index.html'
     context_object_name = 'posts'
     allow_empty = False
+    paginate_by = 2
 
     def get_queryset(self):
         return Women.objects.filter(cat__slug=self.kwargs['cat_slug']).select_related('cat')
@@ -138,8 +147,6 @@ class Contact(View):
         form = ContactForm(request.POST)
         context = {'title': 'Есть контакт', 'form': form}
         if request.method == 'POST':
-            # конфликт версий уходи!!
-            # уже залипаю так шо случайно жамкнул аменд
             if form.is_valid():
                 print(form.cleaned_data)
                 return redirect('home')

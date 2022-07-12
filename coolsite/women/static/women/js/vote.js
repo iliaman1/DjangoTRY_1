@@ -20,16 +20,12 @@ $(document).ready(function(){
     class PostVote extends Vote{
         like(){
             if(this.process(document.location.href + '/like/') === true){
-                document.getElementById(`like`).innerHTML = document.getElementById(`like`).textContent.replace(/\d+$/, parseInt($(`#like`).attr('value'), 10)+1);
-                $(`#like`).val(parseInt($(`#like`).attr('value'), 10)+1);
                 console.log('upload success!')
             }
         }
 
         dislike(){
             if(this.process(document.location.href + '/dislike/') === true){
-                document.getElementById(`dislike`).innerHTML = document.getElementById(`dislike`).textContent.replace(/\d+$/, parseInt($(`#dislike`).attr('value'), 10)+1);
-                $(`#dislike`).val(parseInt($(`#dislike`).attr('value'), 10)+1);
                 console.log('upload success!')
             }
         }
@@ -53,25 +49,28 @@ $(document).ready(function(){
 
     let postvote = new PostVote();
     $('#like').click(function(){
-         document.getElementById(`like`).innerHTML = document.getElementById(`like`).textContent.replace(/\d+$/, parseInt($(`#like`).attr('value'), 10)+1);
+         $(this)[0].innerHTML = $(this)[0].innerHTML.replace(/\d+$/, parseInt($(`#like`).attr('value'), 10)+1);
          $(`#like`).val(parseInt($(`#like`).attr('value'), 10)+1);
         postvote.like()
     })
     $('#dislike').click(function(){
+        $(this)[0].innerHTML = $(this)[0].innerHTML.replace(/\d+$/, parseInt($(`#dislike`).attr('value'), 10)+1);
+        $(`#dislike`).val(parseInt($(`#dislike`).attr('value'), 10)+1);
         postvote.dislike()
     })
 
     let commentvote = new CommentVote();
     $('.comment_like').click(function(){
         let id_comment = this.value
-        console.log(this.attributeName)
-        // let replaced = this.innerHTML.replace(/\d+$/, parseInt(data, 10)+1);
-        // console.log(replaced)
+        $(this)[0].innerHTML = $(this)[0].innerHTML.replace(/\d+$/, parseInt($(this).attr('data-likes'), 10)+1)
+        $(this).attr('data-likes', parseInt($(this).attr('data-likes'),10)+1)
         commentvote.like(id_comment)
 
     })
     $('.comment_dislike').click(function(){
         let id_comment = this.value
+        $(this)[0].innerHTML = $(this)[0].innerHTML.replace(/\d+$/, parseInt($(this).attr('data-dislikes'), 10)+1)
+        $(this).attr('data-dislikes', parseInt($(this).attr('data-dislikes'),10)+1)
         commentvote.dislike(id_comment)
     })
 });

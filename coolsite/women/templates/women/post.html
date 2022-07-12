@@ -41,7 +41,7 @@
                 {{ coment.content }}
                 <div class="clear"></div>
                     <button class="comment_like" id="comment_like {{ coment.pk }}" name="comment_like {{ coment.pk }}" value={{ coment.pk }} data-likes={{ coment.like }}>Лайк {{ coment.like }}</button>
-                    <button class="comment_dislike" id="comment_dislike {{ coment.pk }}" name="comment_dislike {{ coment.pk }}" value={{ coment.dislike }}>Дизлайк {{ coment.dislike }}</button>
+                    <button class="comment_dislike" id="comment_dislike {{ coment.pk }}" name="comment_dislike {{ coment.pk }}" value={{ coment.pk }} data-dislikes={{ coment.dislike }}>Дизлайк {{ coment.dislike }}</button>
             </li>
         {% endfor %}
 

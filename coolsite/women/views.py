@@ -39,7 +39,7 @@ class ShowPost(DataMixin, DetailView):
         context['form_comment'] = AddCommentForm
         post = context['post']
         c_def = self.get_user_context(title=context['post'], comments=Comment.objects.filter(post=post.pk))
-        return dict(list(context.items())+list(c_def.items()))
+        return dict(**context, **c_def)
 
 
 class Vote(ABC):
@@ -103,7 +103,7 @@ class TopRaited(DataMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title='Топ дев')
-        return dict(list(context.items()) + list(c_def.items()))
+        return dict(**context, **c_def)
 
 
 class ShowCategory(DataMixin, ListView):
@@ -119,7 +119,7 @@ class ShowCategory(DataMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title='Категория - ' + str(context['posts'][0].cat), cat_selected=self.kwargs['cat_slug'])
-        return dict(list(context.items())+list(c_def.items()))
+        return dict(**context, **c_def)
 
 
 class AddPage(LoginRequiredMixin, DataMixin, CreateView):
@@ -131,7 +131,7 @@ class AddPage(LoginRequiredMixin, DataMixin, CreateView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title='Добавление статьи')
-        return dict(list(context.items())+list(c_def.items()))
+        return dict(**context, **c_def)
 
 
 class Contact(View):
@@ -152,14 +152,6 @@ class Contact(View):
                 return redirect('home')
             else:
                 return render(request, self.template_name, context=context)
-
-
-class LearnJS(View):
-    template_name = 'women/learn_js.html'
-
-    def get(self, request, *args, **kwargs):
-        context = {'title': 'Учим JavaScript'}
-        return render(request, self.template_name, context=context)
 
 
 class RegisterUser(View):

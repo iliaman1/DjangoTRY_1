@@ -35,6 +35,7 @@
 
                     <div class="header">
                         <ul id="mainmenu" class="mainmenu">
+                            <li class="logo"><a href="{% url 'home' %}">{{ m.title }}</a></li>
                             {% for m in menu %}
 {#                                {% if not forloop.last %}#}
                                     <li><a href="{% url m.url_name %}">{{m.title}}</a></li>

@@ -1,12 +1,11 @@
 from django.core.paginator import Paginator
-from .forms import *
+from .forms import LoginUserForm
 from .models import *
 
 menu = [{'title': "О сайте", 'url_name': 'about'},
         {'title': "Добавить статью", 'url_name': 'add_page'},
         {'title': "Обратная связь", 'url_name': 'contact'},
-        {'title': "Топ дев", 'url_name': 'toprait'},
-        {'title': "Учим JavaScript", 'url_name': 'learnjs'}]
+        {'title': "Топ дев", 'url_name': 'toprait'},]
 
 class DataMixin:
     def get_user_context(self, **kwargs):

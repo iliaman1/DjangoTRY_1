@@ -4,14 +4,12 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseNotFound, Http404, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from django.db.models import *
+from django.db.models import F
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
-from django.db import connection
-from .models import *
-from .forms import *
+from .forms import Women, Comment, AddCommentForm, AddPostForm, ContactForm, RegisterUserForm, LoginUserForm
 from .utils import DataMixin
 from abc import ABC
 
@@ -134,24 +132,19 @@ class AddPage(LoginRequiredMixin, DataMixin, CreateView):
         return dict(**context, **c_def)
 
 
-class Contact(View):
-    form_class = ContactForm()
+class Contact(DataMixin, FormView):
+    form_class = ContactForm
     template_name = 'women/contact.html'
+    success_url = reverse_lazy('home')
 
-    def get(self, request, *args, **kwargs):
-        form = self.form_class
-        context = {'title': 'Есть контакт', 'form': form}
-        return render(request, self.template_name, context=context)
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Есть контакт')
+        return dict(**context, **c_def)
 
-    def post(self, request, *args, **kwargs):
-        form = ContactForm(request.POST)
-        context = {'title': 'Есть контакт', 'form': form}
-        if request.method == 'POST':
-            if form.is_valid():
-                print(form.cleaned_data)
-                return redirect('home')
-            else:
-                return render(request, self.template_name, context=context)
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return redirect('home')
 
 
 class RegisterUser(DataMixin, CreateView):
@@ -165,14 +158,14 @@ class RegisterUser(DataMixin, CreateView):
         return dict(**context, **c_def)
 
 
-class LoginUser(LoginView):
+class LoginUser(DataMixin, LoginView):
     form_class = LoginUserForm
     template_name = 'women/login.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Авторизация'
-        return context
+        c_def = self.get_user_context(title='Авторизация')
+        return dict(**context, **c_def)
 
     def get_success_url(self):
         return reverse_lazy('home')

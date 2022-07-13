@@ -154,36 +154,15 @@ class Contact(View):
                 return render(request, self.template_name, context=context)
 
 
-class RegisterUser(View):
+class RegisterUser(DataMixin, CreateView):
     form_class = RegisterUserForm
     template_name = 'women/register.html'
+    success_url = reverse_lazy('login')
 
-    # success_url = reverse_lazy('login')
-
-    def get(self, request, *args, **kwargs):
-        form = self.form_class
-        context = {'title': 'Регистрация', 'form': form}
-        return render(request, self.template_name, context=context)
-
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)  # зачем в скобках реквест пост?
-        if form.is_valid():
-            form.save()
-        else:
-            errors = {}
-            for error in form.errors:
-                # Теоретически у поля может быть несколько ошибок...
-                errors[error] = form.errors[error][0]
-            context = {'title': 'Регистрация', 'form': form, 'errors': errors}
-            return render(request, self.template_name, context=context)
-        context = {'title': 'Регистрация', 'form': form}
-        return render(request, self.template_name, context=context)
-
-    # код который мог бы работать
-    def form_vaild(self, form):
-        user = form.save()
-        login(self.request, user)
-        return redirect('home')
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Регистрация')
+        return dict(**context, **c_def)
 
 
 class LoginUser(LoginView):

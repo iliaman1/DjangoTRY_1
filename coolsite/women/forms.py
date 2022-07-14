@@ -48,10 +48,44 @@ class RegisterUserForm(UserCreationForm):
         fields = ('username', 'email', 'password1', 'password2')
 
 
+class LoginAjaxForm(forms.Form):
+    username = forms.CharField(
+        label='Логин',
+        max_length=254,
+        widget=forms.TextInput(
+            attrs={
+                'autocomplete': 'username',
+                'class': 'form-control'
+            }
+        )
+    )
+    password = forms.CharField(
+        label='Пароль',
+        strip=False,
+        widget=forms.PasswordInput(
+            attrs={
+                'autocomplete': 'current-password',
+                'class': 'form-control'
+            }
+        )
+    )
+
 
 class LoginUserForm(AuthenticationForm):
-    username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'class': 'form-input'}))
-    password = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+    username = forms.CharField(label='Логин', widget=forms.TextInput(
+        attrs={
+            'autocomplete': 'username',
+            'class': 'form-control'
+            }
+        )
+    )
+    password = forms.CharField(label='Пароль', widget=forms.PasswordInput(
+        attrs={
+            'autocomplete': 'current-password',
+            'class': 'form-control'
+            }
+        )
+    )
 
 
 class ContactForm(forms.Form):

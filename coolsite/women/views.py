@@ -1,4 +1,4 @@
-from django.contrib.auth import logout, login
+from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.views import LoginView
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseNotFound, Http404, JsonResponse
@@ -156,6 +156,27 @@ class RegisterUser(DataMixin, CreateView):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title='Регистрация')
         return dict(**context, **c_def)
+
+
+class LoginAjax(DataMixin, View):
+    def post(self, request):
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        if username and password:
+            user = authenticate(username=username, password=password)
+            if user:
+                login(request, user)
+                return JsonResponse(data={}, status=201)
+            return JsonResponse(
+                data={'error': 'Пароль или логин не валидны'},
+                status=400
+            )
+        return JsonResponse(
+            data={'error': 'Введите логин и пароль'},
+            status=400
+        )
+
 
 
 class LoginUser(DataMixin, LoginView):

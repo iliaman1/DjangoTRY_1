@@ -1,5 +1,5 @@
 from django.core.paginator import Paginator
-from .forms import LoginUserForm
+from .forms import LoginUserForm, LoginAjaxForm
 from .models import *
 
 menu = [{'title': "О сайте", 'url_name': 'about'},

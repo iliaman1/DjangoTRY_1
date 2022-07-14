@@ -29,6 +29,9 @@ $(function ($) {
             },
             error: function (response) {
                 console.log('err - ', response)
+                if (response.status === 400) {
+                    $('.alert-danger').text(response.responseJSON.error).removeClass('d-none')
+                }
             }
         })
     })

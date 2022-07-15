@@ -26,12 +26,14 @@ $(function ($) {
             dataType: 'json',
             success: function (response) {
                 console.log('ok - ', response)
+                if (response.status === 201) {
+                    location.reload()
+                } else if (response.status === 400) {
+                    $('.alert-danger').text(response.error).removeClass('d-none')
+                }
             },
             error: function (response) {
                 console.log('err - ', response)
-                if (response.status === 400) {
-                    $('.alert-danger').text(response.responseJSON.error).removeClass('d-none')
-                }
             }
         })
     })

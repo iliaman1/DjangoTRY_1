@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, DetailView, CreateView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
-from .forms import Women, Comment, AddCommentForm, AddPostForm, ContactForm, RegisterUserForm, LoginUserForm
+from .forms import Women, Comment, AddCommentForm, AddPostForm, ContactForm, RegisterUserForm, LoginUserForm, LoginAjaxForm
 from .utils import DataMixin
 from abc import ABC
 
@@ -159,6 +159,12 @@ class RegisterUser(DataMixin, CreateView):
 
 
 class LoginAjax(DataMixin, View):
+    def get(self, request):
+        context = {
+            'login_ajax': LoginAjaxForm()
+        }
+        return context
+
     def post(self, request):
         username = request.POST.get('username')
         password = request.POST.get('password')

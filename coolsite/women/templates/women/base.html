@@ -43,7 +43,7 @@
                             {% if user.is_authenticated %}
                                 <li class="last">{{ user.username }} | <a href="{% url 'logout' %}">Выйти</a></li>
                             {% else %}
-                                <li class="last"><a href="{% url 'register' %}">Регистрация</a> | <a href="#" data-bs-toggle="modal" data-bs-target="#login_ajax">Авторизация</a></li>
+                                <li class="last"><a href="{% url 'register' %}">Регистрация</a> | <a href="#" data-bs-toggle="modal" data-bs-target="#loginajax">Авторизация</a></li>
                                 {% include 'includes/modal.html' %}
                             {% endif %}
                         </ul>

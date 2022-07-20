@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'women.apps.WomenConfig',
+    'users.apps.UsersConfig',
     'mathfilters',
     'captcha',
     'debug_toolbar'

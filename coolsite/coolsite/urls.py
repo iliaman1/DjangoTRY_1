@@ -19,11 +19,13 @@ from django.urls import path, include
 
 from coolsite import settings
 from women.views import *
+from users.views import *
 
 urlpatterns = [
     path('__debug__/', include('debug_toolbar.urls')),
     path('admin/', admin.site.urls),
     path('', include('women.urls')),
+    path('', include('users.urls')),
     path('captcha/', include('captcha.urls')),
 ]
 

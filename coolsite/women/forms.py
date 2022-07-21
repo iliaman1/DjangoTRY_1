@@ -14,7 +14,7 @@ class AddPostForm(forms.ModelForm):
 
     class Meta:
         model = Women
-        fields = ['title', 'slug', 'content', 'photo', 'is_published', 'cat']
+        fields = ['title', 'slug', 'content', 'photo', 'is_published', 'cat', 'author']
         widgets ={
             'title': forms.TextInput(attrs={'class': 'form-input'}),
             'content': forms.Textarea(attrs={'cols': 60, 'rows': 10}),
@@ -45,7 +45,7 @@ class RegisterUserForm(UserCreationForm):
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'fio', 'gender', 'birth_date', 'ava', 'password1', 'password2')
+        fields = ('username', 'email', 'fio', 'gender', 'birth_date', 'ava', 'slug', 'password1', 'password2')
 
 
 class CustomUserChangeForm(UserChangeForm):

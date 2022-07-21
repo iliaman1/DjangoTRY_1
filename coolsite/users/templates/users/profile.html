@@ -1,1 +1,10 @@
 {% extends 'women/base.html' %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    <h1>{{ usermen }}</h1>
+    {% for f in form %}
+        <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}: </label>{{ f }}</p>
+        <div class="form-error">{{ f.errors }}</div>
+    {% endfor %}
+{% endblock %}

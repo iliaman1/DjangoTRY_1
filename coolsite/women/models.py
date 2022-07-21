@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from users.models import CustomUser
 
 
 class Women(models.Model):
@@ -13,6 +14,7 @@ class Women(models.Model):
     dislike = models.IntegerField(default=0, verbose_name='Дизлайки')
     is_published = models.BooleanField(default=True, verbose_name='Публикация')
     cat = models.ForeignKey('Category', on_delete=models.PROTECT, verbose_name='Категория')
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='post')
 
     def __str__(self):
         return self.title
